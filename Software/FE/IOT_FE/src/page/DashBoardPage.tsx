@@ -1,16 +1,15 @@
-import Card from "./components/CardComponent";
+import Card from "../components/CardComponent";
 import { Line } from "react-chartjs-2";
 import { LiaTemperatureHighSolid } from "react-icons/lia";
 import { WiHumidity } from "react-icons/wi";
 import { CiLight } from "react-icons/ci";
-import sourceData from "./data/sourceData.json";
-import Button from "./components/ButtonComponent";
-import fan_off from "./image/fan-off.png";
-import fan_on from "./image/fan-on.gif";
-import blub_off from "./image/bulb-off.png";
-import blub_on from "./image/bulb-on.png";
-import "./App.css";
-
+import Button from "../components/ButtonComponent";
+import fan_off from "../image/fan-off.png";
+import fan_on from "../image/fan-on.gif";
+import blub_off from "../image/bulb-off.png";
+import blub_on from "../image/bulb-on.png";
+import NarBar from "../components/NavBarComponent";
+import { Fragment } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -21,7 +20,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import NarBar from "./components/NavBarComponent";
 
 ChartJS.register(
   CategoryScale,
@@ -83,7 +81,7 @@ export const data = {
   ],
 };
 
-function App() {
+function Dashboard() {
   const temperature = 10;
   const hudmidity = 10;
   const light = 30;
@@ -195,4 +193,4 @@ function App() {
   );
 }
 
-export default App;
+export default Dashboard;
