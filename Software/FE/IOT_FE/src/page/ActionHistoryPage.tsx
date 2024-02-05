@@ -37,7 +37,7 @@ function ActionHistoryPage() {
     <Fragment>
       <NarBar></NarBar>
       <Table
-        title="Ation History"
+        title="Action History"
         tableHeading={tableHeading}
         listData={listData}
         renderRow={renderActionRow}

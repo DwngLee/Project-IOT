@@ -65,24 +65,27 @@ export const data = {
       data: dataList1,
       borderColor: "rgb(255, 99, 132)",
       backgroundColor: "rgba(255, 99, 132, 0.5)",
+      tension: 0.4,
     },
     {
       label: "Độ ẩm",
       data: dataList2,
       borderColor: "rgb(53, 162, 235)",
       backgroundColor: "rgba(53, 162, 235, 0.5)",
+      tension: 0.4,
     },
     {
       label: "Ánh sáng",
       data: dataList3,
-      borderColor: "rgb(53, 162, 235)",
-      backgroundColor: "#ffff33",
+      borderColor: "#e6e918",
+      backgroundColor: "#fafe05",
+      tension: 0.4,
     },
   ],
 };
 
 function Dashboard() {
-  const temperature = 10;
+  const temperature = 20;
   const hudmidity = 10;
   const light = 30;
 
@@ -179,13 +182,13 @@ function Dashboard() {
 
       <div className="container">
         <div className="row d-flex">
-          <div className="col-2 shadow bg-body-tertiary rounded mt-4">
-            <Button stateOn={blub_on} stateOff={blub_off}></Button>
-            <Button stateOn={fan_on} stateOff={fan_off}></Button>
-          </div>
-
           <div className="col-10" style={{ height: "100%" }}>
             <Line options={options} data={data} />
+          </div>
+          <div className="col-2 shadow bg-body-tertiary rounded mt-4">
+            <Button stateOn={blub_on} stateOff={blub_off}></Button>
+
+            <Button stateOn={fan_on} stateOff={fan_off}></Button>
           </div>
         </div>
       </div>

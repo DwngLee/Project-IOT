@@ -78,7 +78,7 @@ function Table<T>({
       <div className="container mt-4">
         <nav className="navbar bg-body-tertiary">
           <div className="container row">
-            <h1 className="col-3">{title}</h1>
+            <h1 className="col-4">{title}</h1>
             <div className="row col-7">
               <button
                 className="col-1 btn btn-light"
