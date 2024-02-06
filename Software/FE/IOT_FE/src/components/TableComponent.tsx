@@ -1,6 +1,7 @@
 import { Fragment, useState } from "react";
 import { FaSortAmountDown } from "react-icons/fa";
 import { FaSortAmountUp } from "react-icons/fa";
+import DateTimeInput from "./DateTimeInputComponent";
 
 interface Props<T> {
   listData: T[];
@@ -73,6 +74,10 @@ function Table<T>({
     pages.push(i);
   }
 
+  function getDate(startDate: string, endDate: string) {
+    console.log("startDate: " + startDate + ", endDate: " + endDate);
+  }
+
   return (
     <Fragment>
       <div className="container mt-4">
@@ -117,23 +122,7 @@ function Table<T>({
                   ))}
                 </select>
               </div>
-              {/* <form className="d-flex col" role="search">
-                <input
-                  className="form-control me-2"
-                  type="search"
-                  placeholder="Search"
-                  aria-label="Search"
-                  onChange={(e) => {
-                    setQuery(e.target.value);
-                  }}
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                  }}
-                />
-                <button className="btn btn-outline-success" type="submit">
-                  Search
-                </button>
-              </form> */}
+              <DateTimeInput onDatesChange={getDate}></DateTimeInput>
             </div>
           </div>
         </nav>
