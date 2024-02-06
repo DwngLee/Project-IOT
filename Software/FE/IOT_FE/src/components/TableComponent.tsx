@@ -117,7 +117,7 @@ function Table<T>({
                   ))}
                 </select>
               </div>
-              <form className="d-flex col" role="search">
+              {/* <form className="d-flex col" role="search">
                 <input
                   className="form-control me-2"
                   type="search"
@@ -133,7 +133,7 @@ function Table<T>({
                 <button className="btn btn-outline-success" type="submit">
                   Search
                 </button>
-              </form>
+              </form> */}
             </div>
           </div>
         </nav>
