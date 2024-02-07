@@ -4,6 +4,7 @@ import com.example.iot_be.repository.DataRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 @Controller
 public class DataServiceImpl implements Command<DataSensor>{
@@ -16,6 +17,11 @@ public class DataServiceImpl implements Command<DataSensor>{
     @Override
     public void save(DataSensor dataSensor) {
         dataSensorRepo.save(dataSensor);
+    }
+
+    @Override
+    public List<DataSensor> findByTime(LocalDateTime startDate, LocalDateTime endDate) {
+        return null;
     }
 
 }

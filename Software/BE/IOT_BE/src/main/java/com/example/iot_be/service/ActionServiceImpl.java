@@ -5,6 +5,7 @@ import com.example.iot_be.repository.ActionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 @Service
 public class ActionServiceImpl implements Command<Action> {
@@ -18,6 +19,11 @@ public class ActionServiceImpl implements Command<Action> {
     @Override
     public void save(Action action) {
         actionRepo.save(action);
+    }
+
+    @Override
+    public List<Action> findByTime(LocalDateTime startDate, LocalDateTime endDate) {
+        return actionRepo.searchByTime(startDate, endDate);
     }
 
 }
