@@ -32,9 +32,9 @@ public class ActionController {
     }
 
     @GetMapping("/actions/search")
-    public ResponseEntity<List<Action>> searchByTime(@RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                                                     @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate){
-        return new ResponseEntity<>(actionService.findByTime(startDate.atStartOfDay(), endDate.atTime(23, 59, 59)), HttpStatus.OK);
+    public ResponseEntity<List<Action>> searchByTime(@RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")  LocalDateTime startDate,
+                                                     @RequestParam("endDate")  @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")  LocalDateTime endDate){
+        return new ResponseEntity<>(actionService.findByTime(startDate, endDate), HttpStatus.OK);
     }
 
 }

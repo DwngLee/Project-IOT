@@ -24,11 +24,19 @@ function DateTimeInput({ onDatesChange }: DateTimeInputProps) {
     <div>
       <label>
         Chọn ngày và thời gian bắt đầu:
-        <input type="date" value={startDatetime} onChange={handleStartChange} />
+        <input
+          type="datetime-local"
+          value={startDatetime}
+          onChange={handleStartChange}
+        />
       </label>
       <label>
         Chọn ngày và thời gian kết thúc:
-        <input type="date" value={endDatetime} onChange={handleEndChange} />
+        <input
+          type="datetime-local"
+          value={endDatetime}
+          onChange={handleEndChange}
+        />
       </label>
       {/* Truyền hàm handleClick vào onClick */}
       <button onClick={handleClick}>Xác nhận</button>

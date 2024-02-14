@@ -1,10 +1,9 @@
 package com.example.iot_be.enity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,13 +16,16 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Table(name = "data_sensor")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DataSensor {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private double temperature;
     private double humidity;
     private double light;
     @Column(name = "created_at")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonProperty("created_at")
     private LocalDateTime createdAt;
 }
