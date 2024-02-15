@@ -1,10 +1,9 @@
 package com.example.iot_be.enity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
+import jakarta.persistence.*;
 import lombok.*;
 
 
@@ -18,6 +17,7 @@ import java.time.LocalDateTime;
 @ToString
 public class Action {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     @Column(name = "device_name")
     private String deviceName;

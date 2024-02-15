@@ -8,7 +8,9 @@
 
 #define DHTPIN D5      // Digital pin connected to the DHT sensor
 #define LDRPIN A0      // Analog pin connected to the LDR sensor
-#define DHTTYPE DHT11  // DHT 11
+#define DHTTYPE DHT11
+#define LED_1 "den"
+#define LED_2 "quat" 
 
 DHT_Unified dht(DHTPIN, DHTTYPE);
 
@@ -38,10 +40,9 @@ String getCurrentTime() {
   char timeString[20];
   sprintf(timeString, "%04d-%02d-%02d %02d:%02d:%02d", localTime->tm_year + 1900, localTime->tm_mon + 1,
           localTime->tm_mday, localTime->tm_hour, localTime->tm_min, localTime->tm_sec);
-  Serial.println(timeString);
+  Serial.printf(timeString);
   return String(timeString);
 }
-
 
 void setup_wifi() {
 
@@ -80,18 +81,31 @@ void callback(char *topic, byte *payload, unsigned int length) {
   }
   Serial.println();
 
-  // Switch on the LED if an 1 was received as first character
+  // Create a buffer for the incoming JSON data
+  char json[length + 1];
+  for (unsigned int i = 0; i < length; i++) {
+    json[i] = (char)payload[i];
+  }
+  json[length] = '\0';
 
-  if ((char)payload[0] == '0') {
-    digitalWrite(D6, LOW);  // Turn the LED on (Note that LOW is the voltage level
-    // but actually the LED is on; this is because
-    // it is active low on the ESP-01)
-  } else if ((char)payload[0] == '1') {
-    digitalWrite(D6, HIGH);  // Turn the LED off by making the voltage HIGH
-  } else if ((char)payload[0] == '2') {
-    digitalWrite(D7, HIGH);  // Turn the LED off by making the voltage HIGH
-  } else if ((char)payload[0] == '3') {
-    digitalWrite(D7, LOW);  // Turn the LED off by making the voltage HIGH
+  // Parse the JSON
+  StaticJsonDocument<200> doc;
+  deserializeJson(doc, json);
+
+  // Extract values
+  const char* device_name = doc["deviceName"];
+  const char* state = doc["action"];
+
+  Serial.print("Device: ");
+  Serial.println(device_name);
+  Serial.print("Action: ");
+  Serial.println(state);
+
+  // Check which device is being controlled
+  if (strcmp(device_name, LED_1) == 0) {
+    digitalWrite(D6, strcmp(state, "on") == 0 ? HIGH : LOW);
+  } else if (strcmp(device_name, LED_2) == 0) {
+    digitalWrite(D7, strcmp(state, "on") == 0 ? HIGH : LOW);
   }
 }
 
@@ -190,17 +204,6 @@ void loop() {
 
     // Get current time
     String currentTime = getCurrentTime();
-
-    // Format message with temperature, humidity, light, and current time
-    // msgStr = String(temp) + "," + String(hum) + "," + String(ldrValue) + "," + currentTime;
-    // byte arrSize = msgStr.length() + 1;
-    // char msg[arrSize];
-    // Serial.print("PUBLISH DATA:");
-    // Serial.println(msgStr);
-    // msgStr.toCharArray(msg, arrSize);
-    // client.publish(topic, msg);
-    // msgStr = "";
-    // delay(50);
 
     // Create JSON object
     StaticJsonDocument<200> jsonDoc;
