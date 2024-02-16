@@ -1,12 +1,48 @@
+import { format } from "date-fns";
 import { Fragment, useState } from "react";
 
 interface Props {
   stateOn: string;
   stateOff: string;
+  deviceName: string;
 }
 
-function Button({ stateOn, stateOff }: Props) {
+const URL = "http://localhost:8080/actions";
+
+function Button({ stateOn, stateOff, deviceName }: Props) {
+  
   const [imgState, selectdState] = useState(stateOff);
+  const [isOn, setIsOn] = useState(false);
+
+  const sendDataToServer = (action: string) => {
+    const formattedTime = format(new Date(), "yyyy-MM-dd HH:mm:ss");
+    const data = {
+      deviceName: deviceName,
+      action: action,
+      time: formattedTime,
+    };
+
+    fetch(URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        console.log("success");
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
+  const handleButtonClick = (action: string, state: string) => {
+    setIsOn(action === "on");
+    selectdState(state);
+    sendDataToServer(action);
+  };
+
   return (
     <Fragment>
       <div
@@ -16,31 +52,27 @@ function Button({ stateOn, stateOff }: Props) {
         <img
           src={imgState}
           className="img-fluid mt-4"
-          alt="Light Bulb"
           style={{
             maxWidth: "100%",
             maxHeight: "100%",
             height: "100%",
             width: "auto",
           }}
+          alt=""
         />
       </div>
       <div className="row p-4">
         <button
           type="button"
-          className="btn btn-primary col m-1"
-          onClick={() => {
-            selectdState(stateOn);
-          }}
+          className={`btn ${isOn ? 'btn-primary' : 'btn-secondary'} col m-1`}
+          onClick={() => handleButtonClick("on", stateOn)}
         >
           On
         </button>
         <button
           type="button"
-          className="btn btn-danger col m-1"
-          onClick={() => {
-            selectdState(stateOff);
-          }}
+          className={`btn ${isOn ? 'btn-secondary' : 'btn-danger'} col m-1`}
+          onClick={() => handleButtonClick("off", stateOff)}
         >
           Off
         </button>

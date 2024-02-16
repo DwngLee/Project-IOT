@@ -3,27 +3,45 @@ package com.example.iot_be.service;
 import com.example.iot_be.enity.Action;
 import com.example.iot_be.repository.ActionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
+
 @Service
 public class ActionServiceImpl implements Command<Action> {
     @Autowired
     ActionRepo actionRepo;
     @Override
-    public List<Action> getAll() {
-        return actionRepo.findAll();
+    public Page<Action> getAll(int pageNo, int limit, LocalDateTime startDate, LocalDateTime endDate) {
+        if (startDate == null) {
+            startDate = LocalDateTime.of(1970, 1, 1, 0, 0);
+        }
+        if (endDate == null) {
+            endDate = LocalDateTime.now();
+        }
+        Pageable pageable = PageRequest.of(pageNo, limit);
+
+        List<Action> list = actionRepo.searchByTime(startDate, endDate);
+
+        int startIndex = (int) pageable.getOffset();
+        int endIndex = Math.min((startIndex + pageable.getPageSize()), list.size());
+
+        List<Action> subList = list.subList(startIndex, endIndex);
+
+        return new PageImpl<>(subList, pageable, list.size());
     }
+
+    @Override
+    public Page<Action> getAll(int pageNo, int limit, LocalDateTime startDate, LocalDateTime endDate, double minTemp, double maxTemp, double minHumid, double maxHumid, double minLight, double maxLight) {
+        return null;
+    }
+
 
     @Override
     public void save(Action action) {
         actionRepo.save(action);
     }
 
-    @Override
-    public List<Action> findByTime(LocalDateTime startDate, LocalDateTime endDate) {
-        return actionRepo.searchByTime(startDate, endDate);
-    }
 
 }

@@ -186,9 +186,17 @@ function Dashboard() {
             <Line options={options} data={data} />
           </div>
           <div className="col-2 shadow bg-body-tertiary rounded mt-4">
-            <Button stateOn={blub_on} stateOff={blub_off}></Button>
+            <Button
+              stateOn={blub_on}
+              stateOff={blub_off}
+              deviceName="den"
+            ></Button>
 
-            <Button stateOn={fan_on} stateOff={fan_off}></Button>
+            <Button
+              stateOn={fan_on}
+              stateOff={fan_off}
+              deviceName="quat"
+            ></Button>
           </div>
         </div>
       </div>

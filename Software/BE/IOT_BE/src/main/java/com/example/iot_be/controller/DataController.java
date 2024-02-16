@@ -4,27 +4,36 @@ import com.example.iot_be.enity.DataSensor;
 import com.example.iot_be.service.Command;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 public class DataController {
     @Autowired
     @Qualifier("dataServiceImpl")
     Command dataSensorService;
     @GetMapping("/data")
-    public ResponseEntity<List<DataSensor>> getAllData(){
-        return new ResponseEntity<>(dataSensorService.getAll(), HttpStatus.OK);
+    public ResponseEntity<Page<DataSensor>> getAllData(@RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
+                                                       @RequestParam(name = "limit", defaultValue = "5") int limit,
+                                                       @RequestParam(name = "minTemp", defaultValue = "0") double minTemp,
+                                                       @RequestParam(name = "maxTemp", defaultValue = "100") double maxTemp,
+                                                       @RequestParam(name = "minHumid", defaultValue = "0") double minHumid,
+                                                       @RequestParam(name = "maxHumid", defaultValue = "100") double maxHumid,
+                                                       @RequestParam(name = "minLight", defaultValue = "0") double minLight,
+                                                       @RequestParam(name = "maxLight", defaultValue = "1000") double maxLight,
+                                                       @RequestParam(name = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime startDate,
+                                                       @RequestParam(name = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")  LocalDateTime endDate){
+        return new ResponseEntity<>(dataSensorService.getAll(pageNo, limit, startDate, endDate, minTemp, maxTemp, minHumid, maxHumid, minLight, maxLight), HttpStatus.OK);
     }
 
     @PostMapping("/data")
-    public  ResponseEntity<HttpStatus> insertData(@RequestBody DataSensor dataSensor){
+    public  ResponseEntity<HttpStatus> saveData(@RequestBody DataSensor dataSensor){
         dataSensorService.save(dataSensor);
         return new ResponseEntity<>(HttpStatus.OK);
     }

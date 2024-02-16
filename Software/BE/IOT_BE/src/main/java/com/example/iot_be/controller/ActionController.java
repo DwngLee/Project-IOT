@@ -8,16 +8,15 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 public class ActionController {
     @Autowired
     @Qualifier(value = "actionServiceImpl")
@@ -30,8 +29,11 @@ public class ActionController {
             .create();
 
     @GetMapping("/actions")
-    public ResponseEntity<List<Action>> getAllAction(){
-        return  new ResponseEntity<>(actionService.getAll(), HttpStatus.OK);
+    public ResponseEntity<Page<Action>> getAllAction( @RequestParam(name = "page", defaultValue = "0") int pageNo,
+                                                      @RequestParam(name = "limit", defaultValue = "10") int limit,
+                                                      @RequestParam(name = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")  LocalDateTime startDate,
+                                                      @RequestParam(name = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")  LocalDateTime endDate){
+        return  new ResponseEntity<>(actionService.getAll(pageNo, limit, startDate, endDate), HttpStatus.OK);
     }
 
     @PostMapping("/actions")
@@ -45,12 +47,6 @@ public class ActionController {
             throw new RuntimeException(e);
         }
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @GetMapping("/actions/search")
-    public ResponseEntity<List<Action>> searchByTime(@RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")  LocalDateTime startDate,
-                                                     @RequestParam("endDate")  @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")  LocalDateTime endDate){
-        return new ResponseEntity<>(actionService.findByTime(startDate, endDate), HttpStatus.OK);
     }
 
 }
