@@ -1,6 +1,7 @@
 package com.example.iot_be.service;
 
 import com.example.iot_be.enity.Action;
+import com.example.iot_be.exception.NoDataException;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
