@@ -18,9 +18,9 @@ uint32_t delayMS;
 
 // Update these with values suitable for your network.
 
-const char *ssid = "Le Trong Tien_Tang2";
-const char *password = "21121970";
-const char *mqtt_server = "192.168.1.2";
+const char *ssid = "Duong Le Pro";
+const char *password = "123456789";
+const char *mqtt_server = "192.168.43.59";
 const char *topic = "Tempdata";  //publish topic
 WiFiClient espClient;
 PubSubClient client(espClient);

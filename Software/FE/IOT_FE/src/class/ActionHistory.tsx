@@ -7,7 +7,7 @@ export enum Action {
 
 export interface ActionHistory {
   id: string;
-  deviceID: string;
+  deviceName: string;
   action: string;
   time: Date;
 }

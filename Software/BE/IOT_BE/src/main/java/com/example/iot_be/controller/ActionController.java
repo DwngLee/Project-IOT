@@ -33,7 +33,7 @@ public class ActionController {
             .create();
 
     @GetMapping("/actions")
-    public ResponseEntity<Page<Action>> getAllAction( @RequestParam(name = "page", defaultValue = "1") int pageNo,
+    public ResponseEntity<Page<Action>> getAllAction( @RequestParam(name = "page", defaultValue = "0") int pageNo,
                                                       @RequestParam(name = "limit", defaultValue = "10") int limit,
                                                       @RequestParam(name = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")  LocalDateTime startDate,
                                                       @RequestParam(name = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")  LocalDateTime endDate){

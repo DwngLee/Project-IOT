@@ -30,7 +30,7 @@ public class ActionServiceImpl implements Command<Action> {
             endDate = LocalDateTime.now();
         }
 
-        Pageable pageable = PageRequest.of(pageNo-1, limit);
+        Pageable pageable = PageRequest.of(pageNo, limit);
 
         List<Action> list = actionRepo.searchByTime(startDate, endDate);
 

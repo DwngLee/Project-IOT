@@ -1,11 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "bootstrap/dist/css/bootstrap.css";
+
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Dashboard from "./page/DashBoardPage";
 import Profile from "./page/ProfilePage";
 import DataSensorPage from "./page/DataSensorPage";
 import ActionHistoryPage from "./page/ActionHistoryPage";
+
+import "bootstrap/dist/css/bootstrap.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const router = createBrowserRouter([
   {

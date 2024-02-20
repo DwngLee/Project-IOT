@@ -2,11 +2,17 @@ import React, { ChangeEvent, useState } from "react";
 
 interface DateTimeInputProps {
   onDatesChange: (start: string, end: string) => void;
+  startDate: string;
+  endDate: string;
 }
 
-function DateTimeInput({ onDatesChange }: DateTimeInputProps) {
-  const [startDatetime, setStartDatetime] = useState<string>("");
-  const [endDatetime, setEndDatetime] = useState<string>("");
+function DateTimeInput({
+  onDatesChange,
+  startDate,
+  endDate,
+}: DateTimeInputProps) {
+  const [startDatetime, setStartDatetime] = useState<string>(startDate);
+  const [endDatetime, setEndDatetime] = useState<string>(endDate);
 
   const handleStartChange = (event: ChangeEvent<HTMLInputElement>) => {
     setStartDatetime(event.target.value);

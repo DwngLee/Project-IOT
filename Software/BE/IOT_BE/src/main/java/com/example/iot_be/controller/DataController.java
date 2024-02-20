@@ -19,7 +19,7 @@ public class DataController {
     @Qualifier("dataServiceImpl")
     Command dataSensorService;
     @GetMapping("/data")
-    public ResponseEntity<Page<DataSensor>> getAllData(@RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
+    public ResponseEntity<Page<DataSensor>> getAllData(@RequestParam(name = "page", defaultValue = "0") int pageNo,
                                                        @RequestParam(name = "limit", defaultValue = "5") int limit,
                                                        @RequestParam(name = "minTemp", defaultValue = "0") double minTemp,
                                                        @RequestParam(name = "maxTemp", defaultValue = "100") double maxTemp,

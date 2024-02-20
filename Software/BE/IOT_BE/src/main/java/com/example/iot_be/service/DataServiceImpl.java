@@ -43,7 +43,7 @@ public class DataServiceImpl implements Command<DataSensor>{
             throw new NoDataException("Data Sensor");
         }
 
-        Pageable pageable = PageRequest.of(pageNo-1, limit);
+        Pageable pageable = PageRequest.of(pageNo, limit);
 
         int startIndex = (int) pageable.getOffset();
         int endIndex = (int)Math.min(pageable.getOffset() + pageable.getPageSize(), list.size());
