@@ -7,7 +7,8 @@ import { fetchDataSensor } from "../services/UserService";
 import ReactPaginate from "react-paginate";
 import DateTimeInput from "../components/DateTimeInputComponent";
 import MultiRangeSlider from "../components/MultiRangeSlider";
-import Button from "../components/ButtonComponent";
+import DataRange from "../components/DataRange";
+import { debounce } from "lodash";
 
 function DataSensorPage() {
   const todayDate = format(new Date(), "yyyy-MM-dd HH:mm");
@@ -20,29 +21,42 @@ function DataSensorPage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [startDate, setStartDate] = useState("2024-01-01 00:00");
   const [endDate, setEndDate] = useState(todayDate);
-
-  // Thêm state mới để lưu trữ giá trị min/max của MultiRangeSlider
-  const [filterValues, setFilterValues] = useState<{
-    [key: string]: { min: number; max: number };
-  }>({
-    Temperature: { min: 0, max: 100 },
-    Humidity: { min: 0, max: 100 },
-    Light: { min: 0, max: 1000 },
-  });
-
+  const [temperature, setTemperature] = useState({ min: 0, max: 100 });
+  const [humidity, setHumidity] = useState({ min: 0, max: 100 });
+  const [light, setLight] = useState({ min: 0, max: 1000 });
 
   useEffect(() => {
-    getData(currentPage, limit, startDate, endDate);
-  }, [limit, currentPage, startDate, endDate]);
+    getData(
+      currentPage,
+      limit,
+      startDate,
+      endDate,
+      temperature,
+      humidity,
+      light
+    );
+  }, [limit, currentPage, startDate, endDate, temperature, humidity, light]);
 
   const getData = async (
     currentPage: number,
     limit: number,
     startDate: string,
-    endDate: string
+    endDate: string,
+    temperature: { min: number; max: number },
+    humidity: { min: number; max: number },
+    light: { min: number; max: number }
   ) => {
-    let res = await fetchDataSensor(currentPage, limit, startDate, endDate);
+    let res = await fetchDataSensor(
+      currentPage,
+      limit,
+      startDate,
+      endDate,
+      temperature,
+      humidity,
+      light
+    );
     if (res && res.content) {
+      console.log(">>>check: ", res);
       setPageCount(res.totalPages);
       setListData(res.content);
       setTotalItem(res.totalElements);
@@ -59,12 +73,6 @@ function DataSensorPage() {
     setEndDate(endDate);
   };
 
-  const handleFilter = () => {
-    console.log("Filtered Values:", filterValues);
-    // Gọi hàm getData với các giá trị filterValues mới
-    getData(currentPage, limit, startDate, endDate);
-  };
-
   return (
     <Fragment>
       <NarBar></NarBar>
@@ -74,59 +82,76 @@ function DataSensorPage() {
         endDate={endDate}
       ></DateTimeInput>
 
-      <div className="mb-5">
-        <MultiRangeSlider
-          min={0}
-          max={100}
-          onChange={({ min, max }) =>
-            setFilterValues({ ...filterValues, Temperature: { min, max } })
-          }
-          label="Temperature"
-        />
-        <MultiRangeSlider
-          min={0}
-          max={100}
-          onChange={({ min, max }) =>
-            setFilterValues({ ...filterValues, Humidity: { min, max } })
-          }
-          label="Humidity"
-        />
-        <MultiRangeSlider
-          min={0}
-          max={1000}
-          onChange={({ min, max }) =>
-            setFilterValues({ ...filterValues, Light: { min, max } })
-          }
-          label="Light"
-        />
-        <button onClick={handleFilter}>Filter</button>
+      <div className="container">
+        <div className="row">
+          <div className="col-md-3">
+            <div className="vstack gap-3 container p-0">
+              <div className="my-4">
+                <MultiRangeSlider
+                  min={0}
+                  max={100}
+                  rangeLabel="Temperature"
+                  onChange={debounce(
+                    ({ min, max }) => setTemperature({ min, max }),
+                    1000
+                  )}
+                />
+              </div>
+              <div className="my-4">
+                <MultiRangeSlider
+                  min={0}
+                  max={100}
+                  rangeLabel="Humidity"
+                  onChange={debounce(
+                    ({ min, max }) => setHumidity({ min, max }),
+                    1000
+                  )}
+                />
+              </div>
+              <div className="my-4">
+                <MultiRangeSlider
+                  min={0}
+                  max={1000}
+                  rangeLabel="Light"
+                  onChange={debounce(
+                    ({ min, max }) => setLight({ min, max }),
+                    1000
+                  )}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="col-md-9 text-center">
+            <table className="table table-striped table-sm">
+              <thead>
+                <tr>
+                  <th scope="col">
+                    ID <i className="fa-solid fa-arrow-up-long"></i>
+                  </th>
+                  <th scope="col">TEMPERATURE</th>
+                  <th scope="col">HUMIDITY</th>
+                  <th scope="col">LIGHT</th>
+                  <th scope="col">CREATED AT</th>
+                </tr>
+              </thead>
+              <tbody>
+                {listData.map((item) => (
+                  <tr key={item.id}>
+                    <td>{item.id}</td>
+                    <td>{item.temperature}</td>
+                    <td>{item.humidity}</td>
+                    <td>{item.light}</td>
+                    <td>
+                      {format(new Date(item.created_at), "dd/MM/yyyy HH:mm:ss")}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-      <table className="table table-striped table-sm">
-        <thead>
-          <tr>
-            <th scope="col">
-              ID <i className="fa-solid fa-arrow-up-long"></i>
-            </th>
-            <th scope="col">TEMPERATURE</th>
-            <th scope="col">HUMIDITY</th>
-            <th scope="col">LIGHT</th>
-            <th scope="col">CREATED AT</th>
-          </tr>
-        </thead>
-        <tbody>
-          {listData.map((item) => (
-            <tr key={item.id}>
-              <td>{item.id}</td>
-              <td>{item.temperature}</td>
-              <td>{item.humidity}</td>
-              <td>{item.light}</td>
-              <td>
-                {format(new Date(item.created_at), "dd/MM/yyyy HH:mm:ss")}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+
       <select
         value={limit}
         onChange={(e) => setLimit(Number(e.target.value))}

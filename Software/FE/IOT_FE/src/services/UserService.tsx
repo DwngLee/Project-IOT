@@ -15,10 +15,13 @@ const fetchDataSensor = (
   page: number,
   limit: number,
   startDate: string,
-  endDate: string
+  endDate: string,
+  temperature: { min: number; max: number },
+  humidity: { min: number; max: number },
+  light: { min: number; max: number }
 ) => {
   return axios.get(
-    `data?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`
+    `data?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&minTemp=${temperature.min}&maxTemp=${temperature.max}&minHumid=${humidity.min}&maxHumid=${humidity.max}&minLight=${light.min}&maxLight=${light.max}`
   );
 };
 
