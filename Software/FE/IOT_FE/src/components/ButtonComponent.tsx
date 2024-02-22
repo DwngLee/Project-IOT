@@ -7,7 +7,7 @@ interface Props {
   deviceName: string;
 }
 
-const URL = "http://localhost:8080/actions";
+const URL = "http://localhost:8080/api/actions";
 
 function Button({ stateOn, stateOff, deviceName }: Props) {
   const [imgState, selectdState] = useState(stateOff);

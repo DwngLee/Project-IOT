@@ -94,15 +94,15 @@ function Dashboard() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
-  // useEffect(() => {
-  //   let interval = setInterval(() => {
-  //     getData();
-  //   }, 2000);
+  useEffect(() => {
+    let interval = setInterval(() => {
+      getData();
+    }, 2000);
 
-  //   return () => {
-  //     clearInterval(interval);
-  //   };
-  // }, []);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   const getData = async () => {
     let res = await fetchDataSensor4DashBoard(0, 5);
