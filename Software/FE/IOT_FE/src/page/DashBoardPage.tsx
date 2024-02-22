@@ -3,6 +3,7 @@ import { Line } from "react-chartjs-2";
 import { LiaTemperatureHighSolid } from "react-icons/lia";
 import { WiHumidity } from "react-icons/wi";
 import { CiLight } from "react-icons/ci";
+import { fetchDataSensor4DashBoard } from "../services/UserService";
 import Button from "../components/ButtonComponent";
 import fan_off from "../image/fan-off.png";
 import fan_on from "../image/fan-on.gif";
@@ -10,7 +11,7 @@ import blub_off from "../image/bulb-off.png";
 import blub_on from "../image/bulb-on.png";
 import NarBar from "../components/NavBarComponent";
 import { Fragment, useEffect, useState } from "react";
-import { format, getDate } from "date-fns";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -20,9 +21,8 @@ import {
   Title,
   Tooltip,
   Legend,
+  defaults,
 } from "chart.js";
-
-import { fetchDataSensor4DashBoard } from "../services/UserService";
 
 ChartJS.register(
   CategoryScale,
@@ -34,65 +34,14 @@ ChartJS.register(
   Legend
 );
 
-export const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: "top" as const,
-    },
-    title: {
-      display: true,
-      text: "",
-    },
-  },
-};
-
-const labels = [
-  "14:00:00",
-  "14:00:05",
-  "14:00:10",
-  "14:00:15",
-  "14:00:20",
-  "14:00:25",
-  "14:00:30",
-];
-const dataList1 = [10, 11, 12, 10, 28, 30, 30, 31];
-const dataList2 = [12, 10, 11, 21, 12, 20, 11];
-const dataList3 = [13, 11, 13, 21, 16, 23, 14];
-
-export const data = {
-  labels,
-  datasets: [
-    {
-      label: "Nhiệt độ",
-      data: dataList1,
-      borderColor: "rgb(255, 99, 132)",
-      backgroundColor: "rgba(255, 99, 132, 0.5)",
-      tension: 0.4,
-    },
-    {
-      label: "Độ ẩm",
-      data: dataList2,
-      borderColor: "rgb(53, 162, 235)",
-      backgroundColor: "rgba(53, 162, 235, 0.5)",
-      tension: 0.4,
-    },
-    {
-      label: "Ánh sáng",
-      data: dataList3,
-      borderColor: "#e6e918",
-      backgroundColor: "#fafe05",
-      tension: 0.4,
-    },
-  ],
-};
-
 function Dashboard() {
   const [temperature, setTemperature] = useState(0);
   const [humidity, setHumidity] = useState(0);
   const [light, setLight] = useState(0);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [labels, setLabels] = useState([]);
+  const [temperatureList, setTemperatureList] = useState([]);
+  const [humidityList, setHumidityList] = useState([]);
+  const [lightList, setLightList] = useState([]);
 
   useEffect(() => {
     let interval = setInterval(() => {
@@ -105,12 +54,15 @@ function Dashboard() {
   }, []);
 
   const getData = async () => {
-    let res = await fetchDataSensor4DashBoard(0, 5);
+    let res = await fetchDataSensor4DashBoard(0, 8);
     if (res && res.content) {
-      console.log(">>>check: ", res);
       setTemperature(res.content[0].temperature);
       setHumidity(res.content[0].humidity);
       setLight(res.content[0].light);
+      setLabels(res.content.map((data) => data.created_at).reverse());
+      setTemperatureList(res.content.map((data) => data.temperature).reverse());
+      setHumidityList(res.content.map((data) => data.humidity).reverse());
+      setLightList(res.content.map((data) => data.light).reverse());
     }
   };
 
@@ -161,6 +113,77 @@ function Dashboard() {
   setTemperatureColor();
   setHumidColor();
   setLightColor();
+
+  const options = {
+    responsive: true,
+    interaction: {
+      mode: "index" as const,
+      intersect: false,
+    },
+    stacked: false,
+    plugins: {
+      title: {
+        display: true,
+      },
+    },
+    scales: {
+      y: {
+        type: "linear" as const,
+        display: true,
+        position: "left" as const,
+        min: -10,
+        max: 100,
+        title: {
+          display: true,
+          text: "Temperature / Humidity",
+        },
+      },
+      y1: {
+        type: "linear" as const,
+        display: true,
+        position: "right" as const,
+        min: 0,
+        max: 1000,
+        grid: {
+          drawOnChartArea: false,
+        },
+        title: {
+          display: true,
+          text: "Light",
+        },
+      },
+    },
+  };
+
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: "Nhiệt độ",
+        data: temperatureList,
+        borderColor: "rgb(255, 99, 132)",
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+        yAxisID: "y",
+        tension: 0.4,
+      },
+      {
+        label: "Độ ẩm",
+        data: humidityList,
+        borderColor: "rgb(53, 162, 235)",
+        backgroundColor: "rgba(53, 162, 235, 0.5)",
+        yAxisID: "y",
+        tension: 0.4,
+      },
+      {
+        label: "Ánh sáng",
+        data: lightList,
+        borderColor: "#e6e918",
+        backgroundColor: "#fafe05",
+        yAxisID: "y1",
+        tension: 0.4,
+      },
+    ],
+  };
 
   return (
     <>
