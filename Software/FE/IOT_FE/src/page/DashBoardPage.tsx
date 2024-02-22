@@ -54,7 +54,7 @@ function Dashboard() {
   }, []);
 
   const getData = async () => {
-    let res = await fetchDataSensor4DashBoard(0, 8);
+    let res = await fetchDataSensor4DashBoard(0, 5);
     if (res && res.content) {
       setTemperature(res.content[0].temperature);
       setHumidity(res.content[0].humidity);

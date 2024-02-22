@@ -7,7 +7,6 @@ import { fetchDataSensor } from "../services/UserService";
 import ReactPaginate from "react-paginate";
 import DateTimeInput from "../components/DateTimeInputComponent";
 import MultiRangeSlider from "../components/MultiRangeSlider";
-import DataRange from "../components/DataRange";
 import { debounce } from "lodash";
 
 function DataSensorPage() {
@@ -56,7 +55,6 @@ function DataSensorPage() {
       light
     );
     if (res && res.content) {
-      console.log(">>>check: ", res);
       setPageCount(res.totalPages);
       setListData(res.content);
       setTotalItem(res.totalElements);
@@ -76,17 +74,20 @@ function DataSensorPage() {
   return (
     <Fragment>
       <NarBar></NarBar>
-      <DateTimeInput
-        onDatesChange={handleDate}
-        startDate={startDate}
-        endDate={endDate}
-      ></DateTimeInput>
-
       <div className="container">
-        <div className="row">
+        <p className="fw-bold fs-2 mt-2 mb-0">Data Sensor</p>
+        <DateTimeInput
+          onDatesChange={handleDate}
+          startDate={startDate}
+          endDate={endDate}
+        ></DateTimeInput>
+        <div className="row mt-3">
           <div className="col-md-3">
-            <div className="vstack gap-3 container p-0">
-              <div className="my-4">
+            <div
+              className="vstack gap-3 container px-3 shadow bg-body-tertiary rounded "
+              style={{ height: "350px" }}
+            >
+              <div className="my-4 container">
                 <MultiRangeSlider
                   min={0}
                   max={100}
@@ -97,7 +98,7 @@ function DataSensorPage() {
                   )}
                 />
               </div>
-              <div className="my-4">
+              <div className="my-4 container">
                 <MultiRangeSlider
                   min={0}
                   max={100}
@@ -108,7 +109,7 @@ function DataSensorPage() {
                   )}
                 />
               </div>
-              <div className="my-4">
+              <div className="my-4 container">
                 <MultiRangeSlider
                   min={0}
                   max={1000}
@@ -151,41 +152,50 @@ function DataSensorPage() {
           </div>
         </div>
       </div>
-
-      <select
-        value={limit}
-        onChange={(e) => setLimit(Number(e.target.value))}
-        className="form-select"
-      >
-        <option value="5">5/Trang</option>
-        <option value="10">10/Trang</option>
-        <option value="20">20/Trang</option>
-        <option value="50">50/Trang</option>
-      </select>
-      <p>
-        {pageOffSet + 1} -{" "}
-        {pageOffSet + limit > totalItem ? totalItem : pageOffSet + limit}:{" "}
-        {totalItem}
-      </p>
-      <ReactPaginate
-        previousLabel="Previous"
-        nextLabel="Next"
-        pageClassName="page-item"
-        pageLinkClassName="page-link"
-        previousClassName="page-item"
-        previousLinkClassName="page-link"
-        nextClassName="page-item"
-        nextLinkClassName="page-link"
-        breakLabel="..."
-        breakClassName="page-item"
-        breakLinkClassName="page-link"
-        pageCount={pageCount}
-        marginPagesDisplayed={2}
-        pageRangeDisplayed={3}
-        onPageChange={handlePageChange}
-        containerClassName="pagination"
-        activeClassName="active"
-      />
+      <div className="container">
+        <div className="row align-items-center justify-content-end">
+          <div className="col-auto">
+            <ReactPaginate
+              previousLabel="Previous"
+              nextLabel="Next"
+              pageClassName="page-item"
+              pageLinkClassName="page-link"
+              previousClassName="page-item"
+              previousLinkClassName="page-link"
+              nextClassName="page-item"
+              nextLinkClassName="page-link"
+              breakLabel="..."
+              breakClassName="page-item"
+              breakLinkClassName="page-link"
+              pageCount={pageCount}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={3}
+              onPageChange={handlePageChange}
+              containerClassName="pagination"
+              activeClassName="active"
+            />
+          </div>
+          <div className="col-auto">
+            <select
+              value={limit}
+              onChange={(e) => setLimit(Number(e.target.value))}
+              className="form-select mb-3"
+            >
+              <option value="5">5/Page</option>
+              <option value="10">10/Page</option>
+              <option value="20">20/Page</option>
+              <option value="50">50/Page</option>
+            </select>
+          </div>
+          <div className="col-auto">
+            <p className="align-self-center">
+              {pageOffSet + 1} -{" "}
+              {pageOffSet + limit > totalItem ? totalItem : pageOffSet + limit}{" "}
+              of {totalItem}
+            </p>
+          </div>
+        </div>
+      </div>
     </Fragment>
   );
 }

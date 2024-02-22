@@ -27,25 +27,33 @@ function DateTimeInput({
   };
 
   return (
-    <div>
-      <label>
-        Chọn ngày và thời gian bắt đầu:
+    <div className="row align-items-center justify-content-end">
+      <label className="me-4 col-auto">
+        Start Date
         <input
           type="datetime-local"
           value={startDatetime}
           onChange={handleStartChange}
+          className="ms-2"
         />
       </label>
-      <label>
-        Chọn ngày và thời gian kết thúc:
+      <label className="me-4 col-auto">
+        End Date
         <input
           type="datetime-local"
           value={endDatetime}
           onChange={handleEndChange}
+          className="ms-2"
         />
       </label>
-      {/* Truyền hàm handleClick vào onClick */}
-      <button onClick={handleClick}>Xác nhận</button>
+
+      <button
+        onClick={handleClick}
+        type="button"
+        className="btn btn-primary col-auto"
+      >
+        Apply Filter
+      </button>
     </div>
   );
 }

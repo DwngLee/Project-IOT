@@ -122,7 +122,6 @@ function Table<T>({
                   ))}
                 </select>
               </div>
-              <DateTimeInput onDatesChange={getDate}></DateTimeInput>
             </div>
           </div>
         </nav>

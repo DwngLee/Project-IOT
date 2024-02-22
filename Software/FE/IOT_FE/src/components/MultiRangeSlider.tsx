@@ -72,7 +72,7 @@ const MultiRangeSlider: React.FC<MultiRangeSliderProps> = ({
 
   return (
     <Fragment>
-      <p>{rangeLabel}</p>
+      <p className="fw-semibold">{rangeLabel}</p>
       <div>
         <input
           type="range"

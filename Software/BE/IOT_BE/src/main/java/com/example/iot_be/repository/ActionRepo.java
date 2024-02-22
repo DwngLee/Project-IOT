@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface ActionRepo extends JpaRepository<Action, Integer> {
-    @Query("Select action from Action  action where action.time between ?1 and ?2")
+    @Query("Select action from Action  action where action.time between ?1 and ?2 order by action.time desc ")
     List<Action> searchByTime(LocalDateTime startDate, LocalDateTime endDate);
 }
