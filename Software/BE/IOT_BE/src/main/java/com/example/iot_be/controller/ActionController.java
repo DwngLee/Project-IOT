@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
-@Validated
 public class ActionController {
     @Autowired
     @Qualifier(value = "actionServiceImpl")
@@ -31,7 +30,6 @@ public class ActionController {
     Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .create();
-
     @GetMapping("/actions")
     public ResponseEntity<Page<Action>> getAllAction( @RequestParam(name = "page", defaultValue = "0") int pageNo,
                                                       @RequestParam(name = "limit", defaultValue = "10") int limit,
@@ -40,7 +38,6 @@ public class ActionController {
         Page<Action> data = actionService.getAll(pageNo, limit, startDate, endDate);
         return  new ResponseEntity<>(data, HttpStatus.OK);
     }
-
     @PostMapping("/actions")
     public ResponseEntity<HttpStatus> saveAction(@RequestBody Action action){
         actionService.save(action);

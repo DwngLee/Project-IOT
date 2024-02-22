@@ -10,7 +10,6 @@ interface Props {
 const URL = "http://localhost:8080/actions";
 
 function Button({ stateOn, stateOff, deviceName }: Props) {
-  
   const [imgState, selectdState] = useState(stateOff);
   const [isOn, setIsOn] = useState(false);
 
@@ -64,14 +63,14 @@ function Button({ stateOn, stateOff, deviceName }: Props) {
       <div className="row p-4">
         <button
           type="button"
-          className={`btn ${isOn ? 'btn-primary' : 'btn-secondary'} col m-1`}
+          className={`btn ${isOn ? "btn-primary" : "btn-secondary"} col m-1`}
           onClick={() => handleButtonClick("on", stateOn)}
         >
           On
         </button>
         <button
           type="button"
-          className={`btn ${isOn ? 'btn-secondary' : 'btn-danger'} col m-1`}
+          className={`btn ${isOn ? "btn-secondary" : "btn-danger"} col m-1`}
           onClick={() => handleButtonClick("off", stateOff)}
         >
           Off

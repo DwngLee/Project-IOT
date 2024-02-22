@@ -9,7 +9,8 @@ import fan_on from "../image/fan-on.gif";
 import blub_off from "../image/bulb-off.png";
 import blub_on from "../image/bulb-on.png";
 import NarBar from "../components/NavBarComponent";
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
+import { format, getDate } from "date-fns";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -20,6 +21,8 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+
+import { fetchDataSensor4DashBoard } from "../services/UserService";
 
 ChartJS.register(
   CategoryScale,
@@ -85,9 +88,31 @@ export const data = {
 };
 
 function Dashboard() {
-  const temperature = 20;
-  const hudmidity = 10;
-  const light = 30;
+  const [temperature, setTemperature] = useState(0);
+  const [humidity, setHumidity] = useState(0);
+  const [light, setLight] = useState(0);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  // useEffect(() => {
+  //   let interval = setInterval(() => {
+  //     getData();
+  //   }, 2000);
+
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, []);
+
+  const getData = async () => {
+    let res = await fetchDataSensor4DashBoard(0, 5);
+    if (res && res.content) {
+      console.log(">>>check: ", res);
+      setTemperature(res.content[0].temperature);
+      setHumidity(res.content[0].humidity);
+      setLight(res.content[0].light);
+    }
+  };
 
   const defaultTempColor = "#ff6666";
   const defaultHumidColor = "#8080ff";
@@ -111,11 +136,11 @@ function Dashboard() {
 
   const setHumidColor = () => {
     let color = "#80b3ff";
-    if (hudmidity < 15) {
+    if (humidity < 15) {
       color = "#80b3ff";
-    } else if (hudmidity >= 15 && hudmidity < 30) {
+    } else if (humidity >= 15 && humidity < 30) {
       color = "#0066ff";
-    } else if (hudmidity >= 30) {
+    } else if (humidity >= 30) {
       color = "#003d99";
     }
     secondHumidColor = color;
@@ -123,11 +148,11 @@ function Dashboard() {
 
   const setLightColor = () => {
     let color = "#999900";
-    if (light < 15) {
+    if (light < 300) {
       color = "#999900";
-    } else if (light >= 15 && light < 30) {
+    } else if (light >= 300 && light < 600) {
       color = "#cccc00";
-    } else if (light >= 30) {
+    } else if (light >= 600) {
       color = "#ffff00";
     }
     secondLightColor = color;
@@ -146,7 +171,7 @@ function Dashboard() {
             <div className="p-3">
               <Card
                 heading="Nhiệt độ"
-                data="24&#8451;"
+                data={temperature.toString() + "°C"}
                 icon={<LiaTemperatureHighSolid></LiaTemperatureHighSolid>}
                 firstColor={defaultTempColor}
                 secondColor={secondTempColor}
@@ -158,7 +183,7 @@ function Dashboard() {
             <div className="p-3">
               <Card
                 heading="Độ ẩm"
-                data="80%"
+                data={humidity.toString() + "%"}
                 icon={<WiHumidity></WiHumidity>}
                 firstColor={defaultHumidColor}
                 secondColor={secondHumidColor}
@@ -170,7 +195,7 @@ function Dashboard() {
             <div className="p-3">
               <Card
                 heading="Ánh sáng"
-                data="72 lux"
+                data={light.toString() + " lux"}
                 icon={<CiLight></CiLight>}
                 firstColor={defaultLightColor}
                 secondColor={secondLightColor}

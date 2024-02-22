@@ -13,7 +13,8 @@ public interface DataRepo extends JpaRepository<DataSensor, Integer> {
             "data.createdAt between ?1 and ?2 and " +
             "data.temperature between ?3 and ?4 and " +
             "data.humidity between ?5 and ?6 and " +
-            "data.light between ?7 and ?8")
+            "data.light between ?7 and ?8" +
+            " order by data.createdAt desc ")
     List<DataSensor> getDataByFilter(LocalDateTime startDate,
                                      LocalDateTime endDate,
                                      double minTemp,

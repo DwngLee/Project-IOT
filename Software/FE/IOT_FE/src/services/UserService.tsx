@@ -25,4 +25,10 @@ const fetchDataSensor = (
   );
 };
 
-export { fetchDataAction, fetchDataSensor };
+const fetchDataSensor4DashBoard = (page: number, limit: number) => {
+  return axios.get(
+    `data?page=${page}&limit=${limit}&minTemp=&maxTemp=&minHumid=&maxHumid=&minLight=&maxLight=`
+  );
+};
+
+export { fetchDataAction, fetchDataSensor, fetchDataSensor4DashBoard };
