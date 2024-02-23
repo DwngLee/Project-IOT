@@ -1,5 +1,6 @@
 package com.example.iot_be.service;
 import com.example.iot_be.enity.DataSensor;
+import com.example.iot_be.exception.InvalidDateRangeException;
 import com.example.iot_be.exception.NoDataException;
 import com.example.iot_be.repository.DataRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,10 @@ public class DataServiceImpl implements Command<DataSensor>{
                                    double maxHumid,
                                    double minLight,
                                    double maxLight) {
+
+        if (startDate != null && endDate != null && endDate.isBefore(startDate)) {
+            throw new InvalidDateRangeException();
+        }
         if (startDate == null) {
             startDate = LocalDateTime.of(1970, 1, 1, 0, 0);
         }

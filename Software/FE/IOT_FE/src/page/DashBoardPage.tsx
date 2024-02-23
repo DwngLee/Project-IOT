@@ -23,6 +23,7 @@ import {
   Legend,
   defaults,
 } from "chart.js";
+import Loading from "../components/Loading";
 
 ChartJS.register(
   CategoryScale,
@@ -42,6 +43,8 @@ function Dashboard() {
   const [temperatureList, setTemperatureList] = useState([]);
   const [humidityList, setHumidityList] = useState([]);
   const [lightList, setLightList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     let interval = setInterval(() => {
@@ -54,16 +57,26 @@ function Dashboard() {
   }, []);
 
   const getData = async () => {
-    let res = await fetchDataSensor4DashBoard(0, 5);
-    if (res && res.content) {
-      setTemperature(res.content[0].temperature);
-      setHumidity(res.content[0].humidity);
-      setLight(res.content[0].light);
-      setLabels(res.content.map((data) => data.created_at).reverse());
-      setTemperatureList(res.content.map((data) => data.temperature).reverse());
-      setHumidityList(res.content.map((data) => data.humidity).reverse());
-      setLightList(res.content.map((data) => data.light).reverse());
-    }
+    setTimeout(async () => {
+      try {
+        let res = await fetchDataSensor4DashBoard(0, 5);
+        if (res && res.content) {
+          setTemperature(res.content[0].temperature);
+          setHumidity(res.content[0].humidity);
+          setLight(res.content[0].light);
+          setLabels(res.content.map((data) => data.created_at).reverse());
+          setTemperatureList(
+            res.content.map((data) => data.temperature).reverse()
+          );
+          setHumidityList(res.content.map((data) => data.humidity).reverse());
+          setLightList(res.content.map((data) => data.light).reverse());
+          setIsLoading(false);
+        }
+      } catch (e) {
+        setError(e.message);
+        setIsLoading(false);
+      }
+    }, 500);
   };
 
   const defaultTempColor = "#ff6666";
@@ -188,66 +201,78 @@ function Dashboard() {
   return (
     <>
       <NarBar></NarBar>
-      <div className="container  text-center">
-        <div className="row">
-          <div className="col">
-            <div className="p-3">
-              <Card
-                heading="Nhiệt độ"
-                data={temperature.toString() + "°C"}
-                icon={<LiaTemperatureHighSolid></LiaTemperatureHighSolid>}
-                firstColor={defaultTempColor}
-                secondColor={secondTempColor}
-              ></Card>
+      {error && <p className="text-center fw-bold text-danger fs-3">{error}</p>}
+      {isLoading && (
+        <div className="d-flex justify-content-center align-items-center vh-100">
+          <div className="text-center">
+            <p className="fw-bold fs-1">Collecting data.....</p>
+          </div>
+        </div>
+      )}
+      {!isLoading && !error && (
+        <div>
+          <div className="container  text-center">
+            <div className="row">
+              <div className="col">
+                <div className="p-3">
+                  <Card
+                    heading="Nhiệt độ"
+                    data={temperature.toString() + "°C"}
+                    icon={<LiaTemperatureHighSolid></LiaTemperatureHighSolid>}
+                    firstColor={defaultTempColor}
+                    secondColor={secondTempColor}
+                  ></Card>
+                </div>
+              </div>
+
+              <div className="col">
+                <div className="p-3">
+                  <Card
+                    heading="Độ ẩm"
+                    data={humidity.toString() + "%"}
+                    icon={<WiHumidity></WiHumidity>}
+                    firstColor={defaultHumidColor}
+                    secondColor={secondHumidColor}
+                  ></Card>
+                </div>
+              </div>
+
+              <div className="col">
+                <div className="p-3">
+                  <Card
+                    heading="Ánh sáng"
+                    data={light.toString() + " lux"}
+                    icon={<CiLight></CiLight>}
+                    firstColor={defaultLightColor}
+                    secondColor={secondLightColor}
+                  ></Card>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="col">
-            <div className="p-3">
-              <Card
-                heading="Độ ẩm"
-                data={humidity.toString() + "%"}
-                icon={<WiHumidity></WiHumidity>}
-                firstColor={defaultHumidColor}
-                secondColor={secondHumidColor}
-              ></Card>
-            </div>
-          </div>
+          <div className="container">
+            <div className="row d-flex">
+              <div className="col-10" style={{ height: "100%" }}>
+                <Line options={options} data={data} />
+              </div>
+              <div className="col-2 shadow bg-body-tertiary rounded mt-4">
+                <Button
+                  stateOn={blub_on}
+                  stateOff={blub_off}
+                  deviceName="den"
+                ></Button>
 
-          <div className="col">
-            <div className="p-3">
-              <Card
-                heading="Ánh sáng"
-                data={light.toString() + " lux"}
-                icon={<CiLight></CiLight>}
-                firstColor={defaultLightColor}
-                secondColor={secondLightColor}
-              ></Card>
+                <Button
+                  stateOn={fan_on}
+                  stateOff={fan_off}
+                  deviceName="quat"
+                ></Button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="container">
-        <div className="row d-flex">
-          <div className="col-10" style={{ height: "100%" }}>
-            <Line options={options} data={data} />
-          </div>
-          <div className="col-2 shadow bg-body-tertiary rounded mt-4">
-            <Button
-              stateOn={blub_on}
-              stateOff={blub_off}
-              deviceName="den"
-            ></Button>
-
-            <Button
-              stateOn={fan_on}
-              stateOff={fan_off}
-              deviceName="quat"
-            ></Button>
-          </div>
-        </div>
-      </div>
+      )}
     </>
   );
 }

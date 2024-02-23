@@ -17,6 +17,7 @@ function ActionHistoryPage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [startDate, setStartDate] = useState("2024-01-01 00:00");
   const [endDate, setEndDate] = useState(todayDate);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     getData(currentPage, limit, startDate, endDate);
@@ -28,12 +29,19 @@ function ActionHistoryPage() {
     startDate: string,
     endDate: string
   ) => {
-    let res = await fetchDataAction(page, limit, startDate, endDate);
-    if (res && res.content) {
-      setPageCount(res.totalPages);
-      setListData(res.content);
-      setTotalItem(res.totalElements);
-      setPageOffSet(res.pageable.offset);
+    try {
+      let res = await fetchDataAction(page, limit, startDate, endDate);
+      if (res && res.content) {
+        setPageCount(res.totalPages);
+        setListData(res.content);
+        setTotalItem(res.totalElements);
+        setPageOffSet(res.pageable.offset);
+      }
+    } catch (e) {
+      setError(e.response.data.message);
+      setPageCount(0);
+      setTotalItem(0);
+      setPageOffSet(0);
     }
   };
 
@@ -68,16 +76,20 @@ function ActionHistoryPage() {
             </tr>
           </thead>
           <tbody>
-            {listData.map((item) => (
-              <tr key={item.id}>
-                <td>{item.id}</td>
-                <td>{item.deviceName}</td>
-                <td>{item.action}</td>
-                <td>{format(new Date(item.time), "dd/MM/yyyy HH:mm:ss")}</td>
-              </tr>
-            ))}
+            {!error &&
+              listData.map((item) => (
+                <tr key={item.id}>
+                  <td>{item.id}</td>
+                  <td>{item.deviceName}</td>
+                  <td>{item.action}</td>
+                  <td>{format(new Date(item.time), "dd/MM/yyyy HH:mm:ss")}</td>
+                </tr>
+              ))}
           </tbody>
         </table>
+        {error && (
+          <p className="text-center fw-bold text-danger fs-3">{error}</p>
+        )}
         <div className="container">
           <div className="row align-items-center justify-content-end">
             <div className="col-auto">

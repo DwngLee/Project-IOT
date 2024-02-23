@@ -7,7 +7,8 @@ import { fetchDataSensor } from "../services/UserService";
 import ReactPaginate from "react-paginate";
 import DateTimeInput from "../components/DateTimeInputComponent";
 import MultiRangeSlider from "../components/MultiRangeSlider";
-import { debounce } from "lodash";
+import { debounce, divide } from "lodash";
+import Loading from "../components/Loading";
 
 function DataSensorPage() {
   const todayDate = format(new Date(), "yyyy-MM-dd HH:mm");
@@ -23,6 +24,7 @@ function DataSensorPage() {
   const [temperature, setTemperature] = useState({ min: 0, max: 100 });
   const [humidity, setHumidity] = useState({ min: 0, max: 100 });
   const [light, setLight] = useState({ min: 0, max: 1000 });
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     getData(
@@ -45,20 +47,27 @@ function DataSensorPage() {
     humidity: { min: number; max: number },
     light: { min: number; max: number }
   ) => {
-    let res = await fetchDataSensor(
-      currentPage,
-      limit,
-      startDate,
-      endDate,
-      temperature,
-      humidity,
-      light
-    );
-    if (res && res.content) {
-      setPageCount(res.totalPages);
-      setListData(res.content);
-      setTotalItem(res.totalElements);
-      setPageOffSet(res.pageable.offset);
+    try {
+      let res = await fetchDataSensor(
+        currentPage,
+        limit,
+        startDate,
+        endDate,
+        temperature,
+        humidity,
+        light
+      );
+      if (res && res.content) {
+        setPageCount(res.totalPages);
+        setListData(res.content);
+        setTotalItem(res.totalElements);
+        setPageOffSet(res.pageable.offset);
+      }
+    } catch (e) {
+      setError(e.response.data.message);
+      setPageCount(0);
+      setTotalItem(0);
+      setPageOffSet(0);
     }
   };
 
@@ -136,19 +145,26 @@ function DataSensorPage() {
                 </tr>
               </thead>
               <tbody>
-                {listData.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.id}</td>
-                    <td>{item.temperature}</td>
-                    <td>{item.humidity}</td>
-                    <td>{item.light}</td>
-                    <td>
-                      {format(new Date(item.created_at), "dd/MM/yyyy HH:mm:ss")}
-                    </td>
-                  </tr>
-                ))}
+                {!error &&
+                  listData.map((item) => (
+                    <tr key={item.id}>
+                      <td>{item.id}</td>
+                      <td>{item.temperature}</td>
+                      <td>{item.humidity}</td>
+                      <td>{item.light}</td>
+                      <td>
+                        {format(
+                          new Date(item.created_at),
+                          "dd/MM/yyyy HH:mm:ss"
+                        )}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
+            {error && (
+              <p className="text-center fw-bold text-danger fs-3">{error}</p>
+            )}
           </div>
         </div>
       </div>
