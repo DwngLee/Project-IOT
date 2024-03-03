@@ -21,7 +21,10 @@ uint32_t delayMS;
 const char *ssid = "Le Trong Tien_Tang2";
 const char *password = "21121970";
 const char *mqtt_server = "192.168.1.2";
+const int mqtt_port =1884;
 const char *topic = "Tempdata";  //publish topic
+const char *broker_username = "user1";
+const char *broker_password = "1234";
 WiFiClient espClient;
 PubSubClient client(espClient);
 
@@ -117,28 +120,19 @@ void reconnect() {
     String clientId = "ESP8266Client-";
     clientId += String(random(0xffff), HEX);
     // Attempt to connect
-    if (client.connect(clientId.c_str())) {
+    if (client.connect(clientId.c_str(), broker_username, broker_password)) {
       Serial.println("connected");
-      // Once connected, publish an announcement...
-      //      client.publish("device/temp", "Temperature value");
-      //      client.publish("device/humidity", "humidity value");
-
-      // ... and resubscribe
       client.subscribe("device/led");
-      //      client.subscribe("device/led1");
-      //      client.subscribe("device/led2");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
       Serial.println(" try again in 5 seconds");
-      // Wait 5 seconds before retrying
       delay(5000);
     }
   }
 }
 
 void setup() {
-  //  pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
   pinMode(D6, OUTPUT);
   pinMode(D7, OUTPUT);
 
@@ -151,7 +145,7 @@ void setup() {
 
   Serial.begin(115200);
   setup_wifi();
-  client.setServer(mqtt_server, 1883);
+  client.setServer(mqtt_server, mqtt_port);
   client.setCallback(callback);
 
   configTime(7 * 3600, 0, "pool.ntp.org", "time.nist.gov");

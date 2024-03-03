@@ -2,9 +2,8 @@ package com.example.iot_be.controller;
 
 import com.example.iot_be.config.LocalDateTimeAdapter;
 import com.example.iot_be.enity.Action;
-import com.example.iot_be.exception.NoDataException;
 import com.example.iot_be.mqtt.MqttService;
-import com.example.iot_be.service.Command;
+import com.example.iot_be.service.ActionService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 
@@ -23,13 +20,9 @@ import java.time.LocalDateTime;
 public class ActionController {
     @Autowired
     @Qualifier(value = "actionServiceImpl")
-    Command actionService;
-    @Autowired
-    MqttService mqttService;
+    ActionService actionService;
 
-    Gson gson = new GsonBuilder()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-            .create();
+
     @GetMapping("/actions")
     public ResponseEntity<Page<Action>> getAllAction( @RequestParam(name = "page", defaultValue = "0") int pageNo,
                                                       @RequestParam(name = "limit", defaultValue = "10") int limit,
@@ -41,13 +34,6 @@ public class ActionController {
     @PostMapping("/actions")
     public ResponseEntity<HttpStatus> saveAction(@RequestBody Action action){
         actionService.save(action);
-        String message = gson.toJson(action);
-        System.out.println(message);
-        try {
-            mqttService.sendMessage("device/led", message);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -13,14 +13,9 @@ import org.springframework.stereotype.Controller;
 import java.time.LocalDateTime;
 import java.util.List;
 @Controller
-public class DataServiceImpl implements Command<DataSensor>{
+public class DataServiceImpl implements DataService {
     @Autowired
     DataRepo dataSensorRepo;
-
-    @Override
-    public Page<DataSensor> getAll(int pageNo, int limit, LocalDateTime startDate, LocalDateTime endDate) {
-        return null;
-    }
 
     @Override
     public Page<DataSensor> getAll(int pageNo,

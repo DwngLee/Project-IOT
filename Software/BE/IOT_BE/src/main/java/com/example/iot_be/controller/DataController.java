@@ -1,7 +1,7 @@
 package com.example.iot_be.controller;
 
 import com.example.iot_be.enity.DataSensor;
-import com.example.iot_be.service.Command;
+import com.example.iot_be.service.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class DataController {
     @Autowired
     @Qualifier("dataServiceImpl")
-    Command dataSensorService;
+    DataService dataSensorService;
     @GetMapping("/data")
 
     public ResponseEntity<Page<DataSensor>> getAllData(@RequestParam(name = "page", defaultValue = "0") int pageNo,

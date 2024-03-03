@@ -1,9 +1,13 @@
 package com.example.iot_be.service;
 
+import com.example.iot_be.config.LocalDateTimeAdapter;
 import com.example.iot_be.enity.Action;
 import com.example.iot_be.exception.InvalidDateRangeException;
 import com.example.iot_be.exception.NoDataException;
+import com.example.iot_be.mqtt.MqttService;
 import com.example.iot_be.repository.ActionRepo;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -13,9 +17,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class ActionServiceImpl implements Command<Action> {
+public class ActionServiceImpl implements  ActionService {
     @Autowired
     ActionRepo actionRepo;
+    @Autowired
+    MqttService mqttService;
+    Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .create();
     @Override
     public Page<Action> getAll(int pageNo, int limit, LocalDateTime startDate, LocalDateTime endDate) {
 
@@ -47,14 +56,15 @@ public class ActionServiceImpl implements Command<Action> {
     }
 
     @Override
-    public Page<Action> getAll(int pageNo, int limit, LocalDateTime startDate, LocalDateTime endDate, double minTemp, double maxTemp, double minHumid, double maxHumid, double minLight, double maxLight) {
-        return null;
-    }
-
-
-    @Override
     public void save(Action action) {
         actionRepo.save(action);
+        String message = gson.toJson(action);
+        System.out.println(message);
+        try {
+            mqttService.sendMessage("device/led", message);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
