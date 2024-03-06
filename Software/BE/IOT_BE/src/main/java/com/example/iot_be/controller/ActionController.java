@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
@@ -33,9 +34,16 @@ public class ActionController {
     }
     @PostMapping("/actions")
     public ResponseEntity<HttpStatus> saveAction(@RequestBody Action action){
-        actionService.save(action);
+       actionService.sendAction(action);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @GetMapping("/lastaction")
+    public ResponseEntity<List<Action>> getLastAction(){
+        List<Action> actions =  actionService.getLastAction();
+        return  new ResponseEntity<>(actions, HttpStatus.OK);
+    }
+
 
 }
 

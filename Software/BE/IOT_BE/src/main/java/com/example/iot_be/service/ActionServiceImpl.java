@@ -11,9 +11,9 @@ import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -58,6 +58,10 @@ public class ActionServiceImpl implements  ActionService {
     @Override
     public void save(Action action) {
         actionRepo.save(action);
+    }
+
+    @Override
+    public void sendAction(Action action) {
         String message = gson.toJson(action);
         System.out.println(message);
         try {
@@ -65,6 +69,16 @@ public class ActionServiceImpl implements  ActionService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<Action> getLastAction() {
+        List<Action> lastAction = new ArrayList<>();
+        lastAction =actionRepo.getLastAction();
+        if(lastAction.size() == 0 || lastAction == null){
+            throw  new NoDataException("Action");
+        }
+        return  lastAction;
     }
 
 

@@ -1,33 +1,38 @@
-import { format } from "date-fns";
-import { Fragment, useState } from "react";
+import axios from "axios";
+import { Fragment, useState, useEffect } from "react";
+import { ActionHistory } from "../class/ActionHistory";
 
 interface Props {
   stateOn: string;
   stateOff: string;
-  deviceName: string;
+  lastState: ActionHistory;
 }
 
-const URL = "http://localhost:8080/api/actions";
+const actionURL = "http://localhost:8080/api/actions";
 
-function Button({ stateOn, stateOff, deviceName }: Props) {
+function Button({ stateOn, stateOff, lastState }: Props) {
   const [imgState, selectdState] = useState(stateOff);
   const [isOn, setIsOn] = useState(false);
 
+  useEffect(() => {
+    if (lastState && lastState.action === "on") {
+      selectdState(stateOn);
+      setIsOn(true);
+    }
+  }, [lastState]); // Trigger useEffect when lastState changes
+
   const sendDataToServer = (action: string) => {
-    const formattedTime = format(new Date(), "yyyy-MM-dd HH:mm:ss");
     const data = {
-      deviceName: deviceName,
+      deviceName: lastState.deviceName,
       action: action,
-      time: formattedTime,
     };
 
-    fetch(URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
+    axios
+      .post(actionURL, data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
       .then((response) => {
         console.log("success");
       })

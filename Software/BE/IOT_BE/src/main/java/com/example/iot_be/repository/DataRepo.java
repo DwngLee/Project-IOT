@@ -23,4 +23,6 @@ public interface DataRepo extends JpaRepository<DataSensor, Integer> {
                                      double maxHumid,
                                      double minLight,
                                      double maxLight);
+
+
 }

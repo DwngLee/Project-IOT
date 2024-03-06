@@ -9,14 +9,9 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MqttConfig {
-    private static final String MQTT_BROKER = "tcp://localhost:1884";
-    private static final String CLIENT_ID = "spring-boot-mqtt";
-    private static final String SUB_TOPIC = "Tempdata";
-    private static final String USERNAME = "user1";
-    private static final String PASSWORD = "1234";
-
     @Autowired
     private MqttMessageListener mqttMessageListener;
+
 
     @Bean
     public IMqttClient mqttClient() throws Exception {
@@ -24,13 +19,14 @@ public class MqttConfig {
         options.setAutomaticReconnect(true);
         options.setCleanSession(true);
 
-        options.setUserName(USERNAME);
-        options.setPassword(PASSWORD.toCharArray());
+        options.setUserName(MqttConstraint.USERNAME);
+        options.setPassword(MqttConstraint.PASSWORD.toCharArray());
 
-        IMqttClient mqttClient = new MqttClient(MQTT_BROKER, CLIENT_ID);
+        IMqttClient mqttClient = new MqttClient(MqttConstraint.MQTT_BROKER, MqttConstraint.CLIENT_ID);
         mqttClient.connect(options);
 
-        mqttClient.subscribe(SUB_TOPIC, mqttMessageListener);
+        mqttClient.subscribe(MqttConstraint.DATA_TOPIC, mqttMessageListener);
+        mqttClient.subscribe(MqttConstraint.ACTION_TOPIC, mqttMessageListener);
 
         return mqttClient;
     }

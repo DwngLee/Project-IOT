@@ -24,6 +24,8 @@ import {
   defaults,
 } from "chart.js";
 import Loading from "../components/Loading";
+import axios from "axios";
+import { Action, ActionHistory } from "../class/ActionHistory";
 
 ChartJS.register(
   CategoryScale,
@@ -45,6 +47,10 @@ function Dashboard() {
   const [lightList, setLightList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [ledState, setLedState] = useState<ActionHistory>();
+  const [fanState, setFanState] = useState<ActionHistory>();
+
+  const URL = "http://localhost:8080/api/lastaction";
 
   useEffect(() => {
     let interval = setInterval(() => {
@@ -54,6 +60,26 @@ function Dashboard() {
     return () => {
       clearInterval(interval);
     };
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get(URL)
+      .then((response) => {
+        const lastAction = response.data;
+        if (lastAction && lastAction.length > 0) {
+          if (lastAction[0].deviceName === "den") {
+            setLedState(lastAction[0]);
+            setFanState(lastAction[1]);
+          } else {
+            setLedState(lastAction[1]);
+            setFanState(lastAction[0]);
+          }
+        }
+      })
+      .catch((error) => {
+        console.log("Error: ", error);
+      });
   }, []);
 
   const getData = async () => {
@@ -257,17 +283,21 @@ function Dashboard() {
                 <Line options={options} data={data} />
               </div>
               <div className="col-2 shadow bg-body-tertiary rounded mt-4">
-                <Button
-                  stateOn={blub_on}
-                  stateOff={blub_off}
-                  deviceName="den"
-                ></Button>
+                {ledState && (
+                  <Button
+                    stateOn={blub_on}
+                    stateOff={blub_off}
+                    lastState={ledState}
+                  ></Button>
+                )}
 
-                <Button
-                  stateOn={fan_on}
-                  stateOff={fan_off}
-                  deviceName="quat"
-                ></Button>
+                {fanState && (
+                  <Button
+                    stateOn={fan_on}
+                    stateOff={fan_off}
+                    lastState={fanState}
+                  ></Button>
+                )}
               </div>
             </div>
           </div>
