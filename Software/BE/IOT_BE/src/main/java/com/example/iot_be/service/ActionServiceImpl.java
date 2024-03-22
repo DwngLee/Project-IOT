@@ -65,7 +65,7 @@ public class ActionServiceImpl implements  ActionService {
         String message = gson.toJson(action);
         System.out.println(message);
         try {
-            mqttService.sendMessage("device/led", message);
+            mqttService.sendMessageToMqtt("device/led", message);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

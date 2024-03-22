@@ -14,7 +14,7 @@ public class MqttService {
         this.mqttClient = mqttClient;
     }
 
-    public void sendMessage(String topic, String messageContent) throws Exception {
+    public void sendMessageToMqtt(String topic, String messageContent) throws Exception {
         MqttMessage message = new MqttMessage(messageContent.getBytes());
         mqttClient.publish(topic, message);
     }

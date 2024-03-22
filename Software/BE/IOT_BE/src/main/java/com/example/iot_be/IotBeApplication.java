@@ -8,6 +8,16 @@ public class IotBeApplication {
 
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(IotBeApplication.class, args);
+//        WebSocketService webSocketService = context.getBean(WebSocketService.class);
+//        while (true){
+//            Scanner sc = new Scanner(System.in);
+//            String command = sc.nextLine();
+//            if(command.equals("e")){
+//                break;
+//            }
+//            webSocketService.sendMessageToClient("{\"nickname\":\"Server\",\"content\":\"checking\"}");
+//        }
+
     }
 
 

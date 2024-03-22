@@ -4,8 +4,7 @@ import { ActionHistory } from "../class/ActionHistory";
 
 interface Props {
   stateOn: string;
-  stateOff: string;
-  lastState: ActionHistory;
+  stateOff: string; 
 }
 
 const actionURL = "http://localhost:8080/api/actions";

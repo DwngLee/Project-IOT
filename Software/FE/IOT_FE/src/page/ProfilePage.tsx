@@ -9,6 +9,7 @@ import { FaGear } from "react-icons/fa6";
 import NarBar from "../components/NavBarComponent";
 import { GiSkills } from "react-icons/gi";
 import { FaUniversity } from "react-icons/fa";
+import WebSocketComponent from "../components/WebSocketComponent";
 
 function Profile() {
   return (
@@ -40,6 +41,7 @@ function Profile() {
               duongle157.work@gmail.com
             </p>
           </div>
+          
           <hr></hr>
           {/* --------------------------------------------------------------------- */}
           <div className="row mt-4 justify-content-between">

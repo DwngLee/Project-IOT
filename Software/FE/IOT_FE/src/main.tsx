@@ -6,6 +6,7 @@ import Dashboard from "./page/DashBoardPage";
 import Profile from "./page/ProfilePage";
 import DataSensorPage from "./page/DataSensorPage";
 import ActionHistoryPage from "./page/ActionHistoryPage";
+import Chat from "./components/page";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -27,6 +28,7 @@ const router = createBrowserRouter([
     path: "/actionhistory",
     element: <ActionHistoryPage />,
   },
+  { path: "/testsocket", element: <Chat></Chat> },
 ]);
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

@@ -2,6 +2,11 @@ package com.example.iot_be.controller;
 
 import com.example.iot_be.enity.DataSensor;
 import com.example.iot_be.service.DataService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -14,12 +19,17 @@ import java.time.LocalDateTime;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
+@Tag(name = "Data")
 public class DataController {
     @Autowired
     @Qualifier("dataServiceImpl")
     DataService dataSensorService;
     @GetMapping("/data")
-
+    @Operation(description = "Lấy thông tin cảm biến theo các trang tuỳ vào giá trị đầu vào", summary = "Lấy thông tin cảm biến")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lấy thông tin thành công"),
+            @ApiResponse(responseCode = "404", description = "Không có thông tin", content = @Content)
+    })
     public ResponseEntity<Page<DataSensor>> getAllData(@RequestParam(name = "page", defaultValue = "0") int pageNo,
                                                        @RequestParam(name = "limit", defaultValue = "5") int limit,
                                                        @RequestParam(name = "minTemp", defaultValue = "0") double minTemp,
@@ -32,12 +42,5 @@ public class DataController {
                                                        @RequestParam(name = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")  LocalDateTime endDate){
         return new ResponseEntity<>(dataSensorService.getAll(pageNo, limit, startDate, endDate, minTemp, maxTemp, minHumid, maxHumid, minLight, maxLight), HttpStatus.OK);
     }
-
-    @PostMapping("/data")
-    public  ResponseEntity<HttpStatus> saveData(@RequestBody DataSensor dataSensor){
-        dataSensorService.save(dataSensor);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
 
 }

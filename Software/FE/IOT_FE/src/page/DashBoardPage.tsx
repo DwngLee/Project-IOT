@@ -10,7 +10,7 @@ import fan_on from "../image/fan-on.gif";
 import blub_off from "../image/bulb-off.png";
 import blub_on from "../image/bulb-on.png";
 import NarBar from "../components/NavBarComponent";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Chart as ChartJS,
@@ -23,9 +23,10 @@ import {
   Legend,
   defaults,
 } from "chart.js";
-import Loading from "../components/Loading";
 import axios from "axios";
 import { Action, ActionHistory } from "../class/ActionHistory";
+import SockJS from "sockjs-client/dist/sockjs";
+import Stomp from "stompjs";
 
 ChartJS.register(
   CategoryScale,
@@ -49,8 +50,38 @@ function Dashboard() {
   const [error, setError] = useState(null);
   const [ledState, setLedState] = useState<ActionHistory>();
   const [fanState, setFanState] = useState<ActionHistory>();
+  const [stompClient, setStompClient] = useState(null);
+  const [message, setMessage] = useState("");
+  const [isConnected, setIsConnected] = useState(false);
 
   const URL = "http://localhost:8080/api/lastaction";
+
+  useEffect(() => {
+    const socket = new SockJS("http://localhost:8080/api/ws");
+    const client = Stomp.over(socket);
+
+    client.connect({}, () => {
+      setIsConnected(true);
+      client.subscribe("/topic/device", (message) => {
+        const receivedMessage = JSON.parse(message.body);
+        
+      });
+      setStompClient(client);
+    });
+
+    return () => {
+      if (isConnected) {
+        client.disconnect();
+        setIsConnected(false);
+      }
+    };
+  }, [isConnected]);
+
+  const sendMessage = () => {
+    if (message.trim()) {
+      stompClient.send("/app/device", {}, JSON.stringify(message));
+    }
+  };
 
   useEffect(() => {
     let interval = setInterval(() => {

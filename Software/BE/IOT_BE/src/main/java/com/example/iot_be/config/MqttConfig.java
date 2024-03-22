@@ -1,5 +1,7 @@
-package com.example.iot_be.mqtt;
+package com.example.iot_be.config;
 
+import com.example.iot_be.mqtt.MqttConstraint;
+import com.example.iot_be.mqtt.MqttMessageListener;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -11,8 +13,6 @@ import org.springframework.context.annotation.Configuration;
 public class MqttConfig {
     @Autowired
     private MqttMessageListener mqttMessageListener;
-
-
     @Bean
     public IMqttClient mqttClient() throws Exception {
         MqttConnectOptions options = new MqttConnectOptions();
