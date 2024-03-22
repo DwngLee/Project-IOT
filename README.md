@@ -69,9 +69,12 @@ hoặc
 ## ***Hardware ESP8266***
 **Bước 1: Cài đặt Arduino và setup Arduino**
 - Tham khảo cách làm: `http://arduino.vn/bai-viet/68-cai-dat-driver-va-arduino-ide`
+  
 **Bước 2: Cài đặt và setup MQTT Broker**
 - Tham khảo cách làm: `https://ngocautomation.com/tai-va-cai-dat-mqtt-broker-mosquitto/`
+  
 **Bước 3: Kết nối ESP8266 với máy tính**
+  
 **Bước 4: Nạp code vào mạch ESP8266**
 - Mở code trong thư mục: /Software/Broker/light_on_off/light_on_off.ino bằng Arduino
 - Bấm Compile và nạp code
