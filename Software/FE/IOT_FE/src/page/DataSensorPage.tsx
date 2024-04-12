@@ -1,14 +1,13 @@
 import { Fragment, useState, useEffect } from "react";
 import NarBar from "../components/NavBarComponent";
-import Table from "../components/TableComponent";
 import DataSensor from "../class/DataSensor";
 import { format } from "date-fns";
-import { fetchDataSensor } from "../services/UserService";
 import ReactPaginate from "react-paginate";
 import DateTimeInput from "../components/DateTimeInputComponent";
 import MultiRangeSlider from "../components/MultiRangeSlider";
 import { debounce, divide } from "lodash";
 import Loading from "../components/Loading";
+import dataSensorApi from "../services/dataSensorApi";
 
 function DataSensorPage() {
   const todayDate = format(new Date(), "yyyy-MM-dd HH:mm");
@@ -25,38 +24,41 @@ function DataSensorPage() {
   const [humidity, setHumidity] = useState({ min: 0, max: 100 });
   const [light, setLight] = useState({ min: 0, max: 1000 });
   const [error, setError] = useState(null);
+  const [keyword, setKeyword] = useState("");
+  const [searchBy, setSearchBy] = useState("ALL");
 
   useEffect(() => {
     getData(
       currentPage,
       limit,
-      startDate,
-      endDate,
+      searchBy,
+      keyword,
       temperature,
       humidity,
       light
     );
-  }, [limit, currentPage, startDate, endDate, temperature, humidity, light]);
+  }, [limit, currentPage, searchBy, keyword, temperature, humidity, light]);
 
   const getData = async (
     currentPage: number,
     limit: number,
-    startDate: string,
-    endDate: string,
+    searchBy: string,
+    keyword: string,
     temperature: { min: number; max: number },
     humidity: { min: number; max: number },
     light: { min: number; max: number }
   ) => {
     try {
-      let res = await fetchDataSensor(
+      let res = await dataSensorApi.getAll(
         currentPage,
         limit,
-        startDate,
-        endDate,
+        searchBy,
+        keyword,
         temperature,
         humidity,
         light
       );
+
       if (res && res.content) {
         setPageCount(res.totalPages);
         setListData(res.content);
@@ -85,11 +87,40 @@ function DataSensorPage() {
       <NarBar></NarBar>
       <div className="container">
         <p className="fw-bold fs-2 mt-2 mb-0">Data Sensor</p>
-        <DateTimeInput
+        {/* <DateTimeInput
           onDatesChange={handleDate}
           startDate={startDate}
           endDate={endDate}
-        ></DateTimeInput>
+        ></DateTimeInput> */}
+        <div>
+          <div className="row d-flex justify-content-end ">
+            <div className="col-md-6">
+              <input
+                type="text"
+                className="form-control mb-2"
+                placeholder="Nhập từ khóa tìm kiếm"
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+              />
+            </div>
+            <div className="col-md-2">
+              <select
+                className="form-select mb-2"
+                value={searchBy}
+                onChange={(e) => setSearchBy(e.target.value)}
+                defaultValue="ALL"
+              >
+                <option value="ALL">All</option>
+                <option value="id">ID</option>
+                <option value="temperature">Temperature</option>
+                <option value="humidity">Humidity</option>
+                <option value="light">Light</option>
+                <option value="created_at">Created At</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
         <div className="row mt-3">
           <div className="col-md-3">
             <div

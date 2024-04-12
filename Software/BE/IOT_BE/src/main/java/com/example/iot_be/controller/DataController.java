@@ -1,5 +1,6 @@
 package com.example.iot_be.controller;
 
+import com.example.iot_be.config.SearchBy;
 import com.example.iot_be.enity.DataSensor;
 import com.example.iot_be.service.DataService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,7 +14,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 
@@ -24,6 +28,7 @@ public class DataController {
     @Autowired
     @Qualifier("dataServiceImpl")
     DataService dataSensorService;
+
     @GetMapping("/data")
     @Operation(description = "Lấy thông tin cảm biến theo các trang tuỳ vào giá trị đầu vào", summary = "Lấy thông tin cảm biến")
     @ApiResponses(value = {
@@ -39,8 +44,11 @@ public class DataController {
                                                        @RequestParam(name = "minLight", defaultValue = "0") double minLight,
                                                        @RequestParam(name = "maxLight", defaultValue = "1000") double maxLight,
                                                        @RequestParam(name = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime startDate,
-                                                       @RequestParam(name = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")  LocalDateTime endDate){
-        return new ResponseEntity<>(dataSensorService.getAll(pageNo, limit, startDate, endDate, minTemp, maxTemp, minHumid, maxHumid, minLight, maxLight), HttpStatus.OK);
+                                                       @RequestParam(name = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime endDate,
+                                                       @RequestParam(name = "keyword", defaultValue = "") String keyword,
+                                                       @RequestParam(name = "searchBy", defaultValue = "ALL") String searchBy) {
+        return new ResponseEntity<>(dataSensorService.getData(pageNo, limit, keyword, searchBy, minTemp, maxTemp, minHumid, maxHumid, minLight, maxLight), HttpStatus.OK);
     }
+
 
 }

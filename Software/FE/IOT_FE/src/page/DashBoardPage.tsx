@@ -3,7 +3,9 @@ import { Line } from "react-chartjs-2";
 import { LiaTemperatureHighSolid } from "react-icons/lia";
 import { WiHumidity } from "react-icons/wi";
 import { CiLight } from "react-icons/ci";
-import { fetchDataSensor4DashBoard } from "../services/UserService";
+import dataSensorApi, {
+  fetchDataSensor4DashBoard,
+} from "../services/dataSensorApi";
 import Button from "../components/ButtonComponent";
 import fan_off from "../image/fan-off.png";
 import fan_on from "../image/fan-on.gif";
@@ -64,7 +66,6 @@ function Dashboard() {
       setIsConnected(true);
       client.subscribe("/topic/device", (message) => {
         const receivedMessage = JSON.parse(message.body);
-        
       });
       setStompClient(client);
     });
@@ -116,7 +117,7 @@ function Dashboard() {
   const getData = async () => {
     setTimeout(async () => {
       try {
-        let res = await fetchDataSensor4DashBoard(0, 5);
+        let res = await dataSensorApi.getData4DashBoard(0, 5);
         if (res && res.content) {
           setTemperature(res.content[0].temperature);
           setHumidity(res.content[0].humidity);

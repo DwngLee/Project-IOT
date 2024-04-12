@@ -1,10 +1,11 @@
 import { Fragment, useEffect, useState } from "react";
 import { format } from "date-fns";
 import NarBar from "../components/NavBarComponent";
-import { fetchDataAction } from "../services/UserService";
+import { fetchDataAction } from "../services/dataSensorApi";
 import { ActionHistory, Action } from "../class/ActionHistory";
 import ReactPaginate from "react-paginate";
 import DateTimeInput from "../components/DateTimeInputComponent";
+import actionApi from "../services/actionApi";
 
 function ActionHistoryPage() {
   const todayDate = format(new Date(), "yyyy-MM-dd HH:mm");
@@ -30,7 +31,7 @@ function ActionHistoryPage() {
     endDate: string
   ) => {
     try {
-      let res = await fetchDataAction(page, limit, startDate, endDate);
+      let res = await actionApi.getAll(page, limit, startDate, endDate);
       if (res && res.content) {
         setPageCount(res.totalPages);
         setListData(res.content);
