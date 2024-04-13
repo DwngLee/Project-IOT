@@ -9,7 +9,6 @@ import { FaGear } from "react-icons/fa6";
 import NarBar from "../components/NavBarComponent";
 import { GiSkills } from "react-icons/gi";
 import { FaUniversity } from "react-icons/fa";
-import WebSocketComponent from "../components/WebSocketComponent";
 
 function Profile() {
   return (

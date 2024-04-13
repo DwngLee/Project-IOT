@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Stomp from "stompjs";
+import Stomp, { client } from "stompjs";
 import SockJS from "sockjs-client";
 
 const App = () => {
@@ -13,8 +13,9 @@ const App = () => {
     const client = Stomp.over(socket);
 
     client.connect({}, () => {
-      client.subscribe("/topic/messages", (message) => {
+      client.subscribe("/topic/device", (message) => {
         const receivedMessage = JSON.parse(message.body);
+      
         setMessages((prevMessages) => [...prevMessages, receivedMessage]);
       });
     });

@@ -10,6 +10,7 @@ import Chat from "./components/page";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import { DeviceProvider } from "./context/DeviceContext";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,8 @@ const router = createBrowserRouter([
 ]);
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <DeviceProvider>
+      <RouterProvider router={router} />
+    </DeviceProvider>
   </React.StrictMode>
 );

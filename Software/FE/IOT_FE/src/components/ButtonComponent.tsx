@@ -1,50 +1,34 @@
 import axios from "axios";
 import { Fragment, useState, useEffect } from "react";
-import { ActionHistory } from "../class/ActionHistory";
-
+import fan_off from "../image/fan-off.png";
+import fan_on from "../image/fan-on.gif";
+import blub_off from "../image/bulb-off.png";
+import blub_on from "../image/bulb-on.png";
 interface Props {
-  stateOn: string;
-  stateOff: string; 
+  name: string;
+  state: string;
+  onClick: () => void;
 }
 
-const actionURL = "http://localhost:8080/api/actions";
-
-function Button({ stateOn, stateOff, lastState }: Props) {
-  const [imgState, selectdState] = useState(stateOff);
+function Button({ name, state, onClick }: Props) {
+  const [imgSrc, setImgSrc] = useState("");
   const [isOn, setIsOn] = useState(false);
-
-  useEffect(() => {
-    if (lastState && lastState.action === "on") {
-      selectdState(stateOn);
-      setIsOn(true);
-    }
-  }, [lastState]); // Trigger useEffect when lastState changes
-
-  const sendDataToServer = (action: string) => {
-    const data = {
-      deviceName: lastState.deviceName,
-      action: action,
-    };
-
-    axios
-      .post(actionURL, data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
-        console.log("success");
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
-
-  const handleButtonClick = (action: string, state: string) => {
-    setIsOn(action === "on");
-    selectdState(state);
-    sendDataToServer(action);
-  };
+  switch (name) {
+    case "Fan":
+      useEffect(() => {
+        setImgSrc(state === "on" ? fan_on : fan_off);
+        setIsOn(state === "on" ? true : false);
+      }, [name, state]);
+      break;
+    case "Light":
+      useEffect(() => {
+        setImgSrc(state === "on" ? blub_on : blub_off);
+        setIsOn(state === "on" ? true : false);
+      }, [name, state]);
+      break;
+    default:
+      break;
+  }
 
   return (
     <Fragment>
@@ -53,7 +37,7 @@ function Button({ stateOn, stateOff, lastState }: Props) {
         style={{ height: "100px" }}
       >
         <img
-          src={imgState}
+          src={imgSrc}
           className="img-fluid mt-4"
           style={{
             maxWidth: "100%",
@@ -68,14 +52,14 @@ function Button({ stateOn, stateOff, lastState }: Props) {
         <button
           type="button"
           className={`btn ${isOn ? "btn-primary" : "btn-secondary"} col m-1`}
-          onClick={() => handleButtonClick("on", stateOn)}
+          onClick={onClick}
         >
           On
         </button>
         <button
           type="button"
           className={`btn ${isOn ? "btn-secondary" : "btn-danger"} col m-1`}
-          onClick={() => handleButtonClick("off", stateOff)}
+          onClick={onClick}
         >
           Off
         </button>

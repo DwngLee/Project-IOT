@@ -3,17 +3,11 @@ import { Line } from "react-chartjs-2";
 import { LiaTemperatureHighSolid } from "react-icons/lia";
 import { WiHumidity } from "react-icons/wi";
 import { CiLight } from "react-icons/ci";
-import dataSensorApi, {
-  fetchDataSensor4DashBoard,
-} from "../services/dataSensorApi";
+import dataSensorApi from "../services/dataSensorApi";
 import Button from "../components/ButtonComponent";
-import fan_off from "../image/fan-off.png";
-import fan_on from "../image/fan-on.gif";
-import blub_off from "../image/bulb-off.png";
-import blub_on from "../image/bulb-on.png";
 import NarBar from "../components/NavBarComponent";
 import { useEffect, useState } from "react";
-
+import { useDeviceContext } from "../context/DeviceContext";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -25,8 +19,6 @@ import {
   Legend,
   defaults,
 } from "chart.js";
-import axios from "axios";
-import { Action, ActionHistory } from "../class/ActionHistory";
 import SockJS from "sockjs-client/dist/sockjs";
 import Stomp from "stompjs";
 
@@ -50,22 +42,23 @@ function Dashboard() {
   const [lightList, setLightList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [ledState, setLedState] = useState<ActionHistory>();
-  const [fanState, setFanState] = useState<ActionHistory>();
   const [stompClient, setStompClient] = useState(null);
-  const [message, setMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
 
-  const URL = "http://localhost:8080/api/lastaction";
+  const { lightState, fanState, setDeviceState } = useDeviceContext();
 
+  // Socket nhan trang thai thiet bi
   useEffect(() => {
     const socket = new SockJS("http://localhost:8080/api/ws");
     const client = Stomp.over(socket);
 
     client.connect({}, () => {
       setIsConnected(true);
+
       client.subscribe("/topic/device", (message) => {
         const receivedMessage = JSON.parse(message.body);
+        console.log(">>check: ", receivedMessage);
+        setDeviceState(receivedMessage.deviceName, receivedMessage.action);
       });
       setStompClient(client);
     });
@@ -78,12 +71,16 @@ function Dashboard() {
     };
   }, [isConnected]);
 
-  const sendMessage = () => {
-    if (message.trim()) {
-      stompClient.send("/app/device", {}, JSON.stringify(message));
-    }
+  const sendMessage = (deviceName: string, state: string) => {
+    const action = {
+      deviceName: deviceName,
+      action: state,
+    };
+    stompClient.send("/app/device", {}, JSON.stringify(action));
+    console.log("Send message sucess");
   };
 
+  //fetch data cho cai bang :v
   useEffect(() => {
     let interval = setInterval(() => {
       getData();
@@ -92,26 +89,6 @@ function Dashboard() {
     return () => {
       clearInterval(interval);
     };
-  }, []);
-
-  useEffect(() => {
-    axios
-      .get(URL)
-      .then((response) => {
-        const lastAction = response.data;
-        if (lastAction && lastAction.length > 0) {
-          if (lastAction[0].deviceName === "den") {
-            setLedState(lastAction[0]);
-            setFanState(lastAction[1]);
-          } else {
-            setLedState(lastAction[1]);
-            setFanState(lastAction[0]);
-          }
-        }
-      })
-      .catch((error) => {
-        console.log("Error: ", error);
-      });
   }, []);
 
   const getData = async () => {
@@ -315,21 +292,20 @@ function Dashboard() {
                 <Line options={options} data={data} />
               </div>
               <div className="col-2 shadow bg-body-tertiary rounded mt-4">
-                {ledState && (
-                  <Button
-                    stateOn={blub_on}
-                    stateOff={blub_off}
-                    lastState={ledState}
-                  ></Button>
-                )}
-
-                {fanState && (
-                  <Button
-                    stateOn={fan_on}
-                    stateOff={fan_off}
-                    lastState={fanState}
-                  ></Button>
-                )}
+                <Button
+                  name="Fan"
+                  state={fanState}
+                  onClick={() =>
+                    sendMessage("quat", fanState === "on" ? "off" : "on")
+                  }
+                ></Button>
+                <Button
+                  name="Light"
+                  state={lightState}
+                  onClick={() => {
+                    sendMessage("den", lightState === "on" ? "off" : "on")
+                  }}
+                ></Button>
               </div>
             </div>
           </div>

@@ -17,7 +17,8 @@ public interface DataRepo extends JpaRepository<DataSensor, Integer> {
             ") LIKE %:keyword% " +
             "AND temperature BETWEEN :minTemp AND :maxTemp " +
             "AND humidity BETWEEN :minHumid AND :maxHumid " +
-            "AND light BETWEEN :minLight AND :maxLight", nativeQuery = true)
+            "AND light BETWEEN :minLight AND :maxLight " +
+            "ORDER BY created_at DESC", nativeQuery = true)
     List<DataSensor> getDataByFilter(String searchBy,
                                      String keyword,
                                      double minTemp,
@@ -37,7 +38,8 @@ public interface DataRepo extends JpaRepository<DataSensor, Integer> {
             "OR created_at LIKE %?1% " +
             "AND temperature BETWEEN ?2 AND ?3 " +
             "AND humidity BETWEEN ?4 AND ?5 " +
-            "AND light BETWEEN ?6 AND ?7", nativeQuery = true)
+            "AND light BETWEEN ?6 AND ?7 " +
+            "ORDER BY created_at DESC", nativeQuery = true)
     List<DataSensor> getAllData(String keyword,
                                 double minTemp,
                                 double maxTemp,
