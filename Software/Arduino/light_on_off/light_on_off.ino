@@ -6,8 +6,8 @@
 #include <TimeLib.h>
 #include <ArduinoJson.h>
 
-#define DHTPIN D5  // Digital pin connected to the DHT sensor
-#define LDRPIN A0  // Analog pin connected to the LDR sensor
+#define DHTPIN D5  
+#define LDRPIN A0  
 #define DHTTYPE DHT11
 #define LED_1 "den"
 #define LED_2 "quat"
@@ -16,7 +16,6 @@ DHT_Unified dht(DHTPIN, DHTTYPE);
 
 uint32_t delayMS;
 
-// Update these with values suitable for your network.
 
 const char *ssid = "Le Trong Tien_Tang2";
 const char *password = "21121970";
@@ -33,21 +32,6 @@ unsigned long lastMsg = 0;
 String msgStr = "";
 float temp, hum;
 int ldrValue;
-
-String getCurrentTime() {
-  // Get current time
-  time_t now = time(nullptr);
-
-  // Convert time to local time
-  struct tm *localTime = localtime(&now);
-
-  // Format time as string (example format: "YYYY-MM-DD HH:MM:SS")
-  char timeString[20];
-  sprintf(timeString, "%04d-%02d-%02d %02d:%02d:%02d", localTime->tm_year + 1900, localTime->tm_mon + 1,
-          localTime->tm_mday, localTime->tm_hour, localTime->tm_min, localTime->tm_sec);
-  Serial.printf(timeString);
-  return String(timeString);
-}
 
 void setup_wifi() {
 
@@ -105,7 +89,6 @@ void callback(char *topic, byte *payload, unsigned int length) {
   // Check which device is being controlled
   if (strcmp(device_name, LED_1) == 0) {
     digitalWrite(D6, strcmp(state, "on") == 0 ? HIGH : LOW);
-
   } else if (strcmp(device_name, LED_2) == 0) {
     digitalWrite(D7, strcmp(state, "on") == 0 ? HIGH : LOW);
   }
@@ -174,7 +157,7 @@ void loop() {
     dht.temperature().getEvent(&event);
     if (isnan(event.temperature)) {
       Serial.println(F("Error reading temperature!"));
-      temp = NULL;
+
     } else {
       Serial.print(F("Temperature: "));
       Serial.print(event.temperature);
@@ -185,7 +168,7 @@ void loop() {
     dht.humidity().getEvent(&event);
     if (isnan(event.relative_humidity)) {
       Serial.println(F("Error reading humidity!"));
-      hum = NULL;
+
     } else {
       Serial.print(F("Humidity: "));
       Serial.print(event.relative_humidity);
@@ -203,15 +186,13 @@ void loop() {
       Serial.println("Failed to read LDR sensor value!");
     }
 
-    // Get current time
-    String currentTime = getCurrentTime();
 
     // Create JSON object
     StaticJsonDocument<200> jsonDoc;
     jsonDoc["temperature"] = temp;
     jsonDoc["humidity"] = hum;
     jsonDoc["light"] = ldrValue;
-    // jsonDoc["created_at"] = getCurrentTime();
+
 
     // Serialize JSON to string
     String jsonStr;

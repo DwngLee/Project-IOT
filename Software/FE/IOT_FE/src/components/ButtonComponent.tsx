@@ -40,25 +40,23 @@ function Button({ name, state, onClick }: Props) {
           src={imgSrc}
           className="img-fluid mt-4"
           style={{
-            maxWidth: "100%",
-            maxHeight: "100%",
-            height: "100%",
+            height: "125%",
             width: "auto",
           }}
           alt=""
         />
       </div>
-      <div className="row p-4">
+      <div className="row p-4 m-3">
         <button
           type="button"
-          className={`btn ${isOn ? "btn-primary" : "btn-secondary"} col m-1`}
+          className={`btn ${isOn ? "btn-primary" : "btn-secondary"} col mx-3`}
           onClick={onClick}
         >
           On
         </button>
         <button
           type="button"
-          className={`btn ${isOn ? "btn-secondary" : "btn-danger"} col m-1`}
+          className={`btn ${isOn ? "btn-secondary" : "btn-danger"} col mx-3`}
           onClick={onClick}
         >
           Off

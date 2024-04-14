@@ -71,15 +71,6 @@ public class ActionServiceImpl implements  ActionService {
         }
     }
 
-    @Override
-    public List<Action> getLastAction() {
-        List<Action> lastAction = new ArrayList<>();
-        lastAction =actionRepo.getLastAction();
-        if(lastAction.size() == 0 || lastAction == null){
-            throw  new NoDataException("Action");
-        }
-        return  lastAction;
-    }
 
 
 }

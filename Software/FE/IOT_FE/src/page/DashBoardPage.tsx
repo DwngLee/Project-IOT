@@ -57,7 +57,6 @@ function Dashboard() {
 
       client.subscribe("/topic/device", (message) => {
         const receivedMessage = JSON.parse(message.body);
-        console.log(">>check: ", receivedMessage);
         setDeviceState(receivedMessage.deviceName, receivedMessage.action);
       });
       setStompClient(client);
@@ -72,12 +71,16 @@ function Dashboard() {
   }, [isConnected]);
 
   const sendMessage = (deviceName: string, state: string) => {
-    const action = {
-      deviceName: deviceName,
-      action: state,
-    };
-    stompClient.send("/app/device", {}, JSON.stringify(action));
-    console.log("Send message sucess");
+    try {
+      const action = {
+        deviceName: deviceName,
+        action: state,
+      };
+      stompClient.send("/app/device", {}, JSON.stringify(action));
+      console.log("Send message sucess");
+    } catch (error) {
+      alert("Something is wrong, please try later");
+    }
   };
 
   //fetch data cho cai bang :v
@@ -246,10 +249,10 @@ function Dashboard() {
       )}
       {!isLoading && !error && (
         <div>
-          <div className="container  text-center">
+          <div className="container text-center">
             <div className="row">
-              <div className="col">
-                <div className="p-3">
+              <div className="col-4">
+                <div className="py-3">
                   <Card
                     heading="Nhiệt độ"
                     data={temperature.toString() + "°C"}
@@ -260,8 +263,8 @@ function Dashboard() {
                 </div>
               </div>
 
-              <div className="col">
-                <div className="p-3">
+              <div className="col-4">
+                <div className="py-3">
                   <Card
                     heading="Độ ẩm"
                     data={humidity.toString() + "%"}
@@ -272,8 +275,8 @@ function Dashboard() {
                 </div>
               </div>
 
-              <div className="col">
-                <div className="p-3">
+              <div className="col-4">
+                <div className="py-3">
                   <Card
                     heading="Ánh sáng"
                     data={light.toString() + " lux"}
@@ -287,25 +290,27 @@ function Dashboard() {
           </div>
 
           <div className="container">
-            <div className="row d-flex">
-              <div className="col-10" style={{ height: "100%" }}>
+            <div className="row ">
+              <div className="col-8" style={{ height: "100%" }}>
                 <Line options={options} data={data} />
               </div>
-              <div className="col-2 shadow bg-body-tertiary rounded mt-4">
-                <Button
-                  name="Fan"
-                  state={fanState}
-                  onClick={() =>
-                    sendMessage("quat", fanState === "on" ? "off" : "on")
-                  }
-                ></Button>
-                <Button
-                  name="Light"
-                  state={lightState}
-                  onClick={() => {
-                    sendMessage("den", lightState === "on" ? "off" : "on")
-                  }}
-                ></Button>
+              <div className="col-4 mt-4 ">
+                <div className="shadow  rounded">
+                  <Button
+                    name="Fan"
+                    state={fanState}
+                    onClick={() =>
+                      sendMessage("quat", fanState === "on" ? "off" : "on")
+                    }
+                  ></Button>
+                  <Button
+                    name="Light"
+                    state={lightState}
+                    onClick={() => {
+                      sendMessage("den", lightState === "on" ? "off" : "on");
+                    }}
+                  ></Button>
+                </div>
               </div>
             </div>
           </div>

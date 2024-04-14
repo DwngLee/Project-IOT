@@ -10,6 +10,5 @@ public interface ActionService {
     Page<Action> getAll(int pageNo, int limit, LocalDateTime startDate, LocalDateTime endDate);
     void save(Action action);
     void sendAction(Action action);
-    List<Action> getLastAction();
     
 }

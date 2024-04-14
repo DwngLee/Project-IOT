@@ -54,13 +54,6 @@ public class ActionController {
        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/lastaction")
-    @Operation(summary = "Lấy ra trạng thái cuối cùng của mỗi thiết bị")
-    public ResponseEntity<List<Action>> getLastAction(){
-        List<Action> actions =  actionService.getLastAction();
-        return  new ResponseEntity<>(actions, HttpStatus.OK);
-    }
-
 
 }
 
