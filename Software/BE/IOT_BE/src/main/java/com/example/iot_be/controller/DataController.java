@@ -1,6 +1,5 @@
 package com.example.iot_be.controller;
 
-import com.example.iot_be.config.SearchBy;
 import com.example.iot_be.enity.DataSensor;
 import com.example.iot_be.service.DataService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,8 +45,10 @@ public class DataController {
                                                        @RequestParam(name = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime startDate,
                                                        @RequestParam(name = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime endDate,
                                                        @RequestParam(name = "keyword", defaultValue = "") String keyword,
-                                                       @RequestParam(name = "searchBy", defaultValue = "ALL") String searchBy) {
-        return new ResponseEntity<>(dataSensorService.getData(pageNo, limit, keyword, searchBy, minTemp, maxTemp, minHumid, maxHumid, minLight, maxLight), HttpStatus.OK);
+                                                       @RequestParam(name = "searchBy", defaultValue = "ALL") String searchBy,
+                                                       @RequestParam(name = "sortColumn", defaultValue = "created_at") String sortColumn,
+                                                       @RequestParam(name = "sortDirection", defaultValue = "asc") String sortDirection) {
+        return new ResponseEntity<>(dataSensorService.getData(pageNo, limit, keyword, searchBy, minTemp, maxTemp, minHumid, maxHumid, minLight, maxLight, sortColumn, sortDirection), HttpStatus.OK);
     }
 
 

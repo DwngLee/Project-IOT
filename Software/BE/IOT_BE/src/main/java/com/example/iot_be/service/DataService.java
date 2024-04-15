@@ -14,9 +14,7 @@ public interface DataService {
                              double minHumid,
                              double maxHumid,
                              double minLight,
-                             double maxLight);
-
-    Page<DataSensor> searchData(int pageNo, int limit, String keyword, String searchBy);
-
-    void save(DataSensor dataSensor);
+                             double maxLight,
+                             String sortColum,
+                             String sortDirection);
 }

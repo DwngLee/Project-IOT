@@ -6,10 +6,7 @@ import com.example.iot_be.exception.InvalidDateRangeException;
 import com.example.iot_be.exception.NoDataException;
 import com.example.iot_be.repository.DataRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDateTime;
@@ -22,11 +19,6 @@ public class DataServiceImpl implements DataService {
     DataRepo dataSensorRepo;
 
     @Override
-    public Page<DataSensor> searchData(int pageNo, int limit, String keyword, String searchBy) {
-        return null;
-    }
-
-    @Override
     public Page<DataSensor> getData(int pageNo,
                                     int limit,
                                     String keyword,
@@ -36,7 +28,9 @@ public class DataServiceImpl implements DataService {
                                     double minHumid,
                                     double maxHumid,
                                     double minLight,
-                                    double maxLight) {
+                                    double maxLight,
+                                    String sortColumn,
+                                    String sortDirection) {
         //Danh cho trung hop yeu cau search theo thoi gian
 //        if (startDate != null && endDate != null && endDate.isBefore(startDate)) {
 //            throw new InvalidDateRangeException();
@@ -48,10 +42,12 @@ public class DataServiceImpl implements DataService {
 //            endDate = LocalDateTime.now();
 //        }
         List<DataSensor> list = new ArrayList<>();
+        Sort.Direction sort = Sort.Direction.DESC;
+
         if(searchBy.equals("ALL")){
-                list = dataSensorRepo.getAllData(keyword, minTemp, maxTemp, minHumid, maxHumid, minLight, maxLight);
+                list = dataSensorRepo.getAllData(keyword, minTemp, maxTemp, minHumid, maxHumid, minLight, maxLight, sortColumn, sortDirection);
         }else{
-            list = dataSensorRepo.getDataByFilter(searchBy, keyword, minTemp, maxTemp, minHumid, maxHumid, minLight, maxLight);
+            list = dataSensorRepo.getDataByFilter(searchBy, keyword, minTemp, maxTemp, minHumid, maxHumid, minLight, maxLight, sortColumn, sortDirection);
         }
 
         if (list.size() == 0) {
@@ -67,8 +63,4 @@ public class DataServiceImpl implements DataService {
         return new PageImpl<>(subList, pageable, list.size());
     }
 
-    @Override
-    public void save(DataSensor dataSensor) {
-        dataSensorRepo.save(dataSensor);
-    }
 }

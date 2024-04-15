@@ -8,25 +8,28 @@ import com.example.iot_be.mqtt.MqttService;
 import com.example.iot_be.repository.ActionRepo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ActionServiceImpl implements  ActionService {
-    @Autowired
+@AllArgsConstructor
+public class ActionServiceImpl implements ActionService {
     ActionRepo actionRepo;
-    @Autowired
     MqttService mqttService;
+
     Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .create();
+
     @Override
-    public Page<Action> getAll(int pageNo, int limit, LocalDateTime startDate, LocalDateTime endDate) {
+    public Page<Action> getAll(int pageNo, int limit, LocalDateTime startDate, LocalDateTime endDate, String sortColumn, String sortDirection) {
 
         if (startDate != null && endDate != null && endDate.isBefore(startDate)) {
             throw new InvalidDateRangeException();
@@ -41,10 +44,10 @@ public class ActionServiceImpl implements  ActionService {
 
         Pageable pageable = PageRequest.of(pageNo, limit);
 
-        List<Action> list = actionRepo.searchByTime(startDate, endDate);
+        List<Action> list = actionRepo.searchByTime(startDate, endDate, sortColumn, sortDirection);
 
-        if(list.size() == 0){
-            throw  new NoDataException("Action");
+        if (list.isEmpty()) {
+            throw new NoDataException("Action");
         }
 
         int startIndex = (int) pageable.getOffset();
@@ -53,11 +56,6 @@ public class ActionServiceImpl implements  ActionService {
         List<Action> subList = list.subList(startIndex, endIndex);
 
         return new PageImpl<>(subList, pageable, list.size());
-    }
-
-    @Override
-    public void save(Action action) {
-        actionRepo.save(action);
     }
 
     @Override
@@ -70,7 +68,6 @@ public class ActionServiceImpl implements  ActionService {
             throw new RuntimeException(e);
         }
     }
-
 
 
 }

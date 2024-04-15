@@ -18,7 +18,17 @@ public interface DataRepo extends JpaRepository<DataSensor, Integer> {
             "AND temperature BETWEEN :minTemp AND :maxTemp " +
             "AND humidity BETWEEN :minHumid AND :maxHumid " +
             "AND light BETWEEN :minLight AND :maxLight " +
-            "ORDER BY created_at DESC", nativeQuery = true)
+            "ORDER BY " +
+            "CASE WHEN :sortColumn = 'id' AND :sortDirection = 'ASC' THEN id END, " +
+            "CASE WHEN :sortColumn = 'id' AND :sortDirection = 'DESC' THEN id END DESC, " +
+            "CASE WHEN :sortColumn = 'temperature' AND :sortDirection = 'ASC' THEN temperature END, " +
+            "CASE WHEN :sortColumn = 'temperature' AND :sortDirection = 'DESC' THEN temperature END DESC, " +
+            "CASE WHEN :sortColumn = 'humidity' AND :sortDirection = 'ASC' THEN humidity END, " +
+            "CASE WHEN :sortColumn = 'humidity' AND :sortDirection = 'DESC' THEN humidity END DESC, " +
+            "CASE WHEN :sortColumn = 'light' AND :sortDirection = 'ASC' THEN light END, " +
+            "CASE WHEN :sortColumn = 'light' AND :sortDirection = 'DESC' THEN light END DESC, " +
+            "CASE WHEN :sortColumn = 'created_at' AND :sortDirection = 'ASC' THEN created_at END, " +
+            "CASE WHEN :sortColumn = 'created_at' AND :sortDirection = 'DESC' THEN created_at END DESC ", nativeQuery = true)
     List<DataSensor> getDataByFilter(String searchBy,
                                      String keyword,
                                      double minTemp,
@@ -26,27 +36,39 @@ public interface DataRepo extends JpaRepository<DataSensor, Integer> {
                                      double minHumid,
                                      double maxHumid,
                                      double minLight,
-                                     double maxLight);
-
+                                     double maxLight,
+                                     String sortColumn,
+                                     String sortDirection);
 
 
     @Query(value = "SELECT * FROM data_sensor " +
-            "WHERE id LIKE %?1% " +
-            "OR temperature LIKE %?1% " +
-            "OR humidity LIKE %?1% " +
-            "OR light LIKE %?1% " +
-            "OR created_at LIKE %?1% " +
-            "AND temperature BETWEEN ?2 AND ?3 " +
-            "AND humidity BETWEEN ?4 AND ?5 " +
-            "AND light BETWEEN ?6 AND ?7 " +
-            "ORDER BY created_at DESC", nativeQuery = true)
+            "WHERE (id LIKE %:keyword% " +
+            "    OR temperature LIKE %:keyword% " +
+            "    OR humidity LIKE %:keyword% " +
+            "    OR light LIKE %:keyword% " +
+            "    OR created_at LIKE %:keyword%) " +
+            "AND temperature BETWEEN :minTemp AND :maxTemp " +
+            "AND humidity BETWEEN :minHumid AND :maxHumid " +
+            "AND light BETWEEN :minLight AND :maxLight " +
+            "ORDER BY " +
+            "CASE WHEN :sortColumn = 'id' AND :sortDirection = 'ASC' THEN id END, " +
+            "CASE WHEN :sortColumn = 'id' AND :sortDirection = 'DESC' THEN id END DESC, " +
+            "CASE WHEN :sortColumn = 'temperature' AND :sortDirection = 'ASC' THEN temperature END, " +
+            "CASE WHEN :sortColumn = 'temperature' AND :sortDirection = 'DESC' THEN temperature END DESC, " +
+            "CASE WHEN :sortColumn = 'humidity' AND :sortDirection = 'ASC' THEN humidity END, " +
+            "CASE WHEN :sortColumn = 'humidity' AND :sortDirection = 'DESC' THEN humidity END DESC, " +
+            "CASE WHEN :sortColumn = 'light' AND :sortDirection = 'ASC' THEN light END, " +
+            "CASE WHEN :sortColumn = 'light' AND :sortDirection = 'DESC' THEN light END DESC, " +
+            "CASE WHEN :sortColumn = 'created_at' AND :sortDirection = 'ASC' THEN created_at END, " +
+            "CASE WHEN :sortColumn = 'created_at' AND :sortDirection = 'DESC' THEN created_at END DESC "
+            , nativeQuery = true)
     List<DataSensor> getAllData(String keyword,
                                 double minTemp,
                                 double maxTemp,
                                 double minHumid,
                                 double maxHumid,
                                 double minLight,
-                                double maxLight);
-
-
+                                double maxLight,
+                                String sortColumn,
+                                String sortDirection);
 }

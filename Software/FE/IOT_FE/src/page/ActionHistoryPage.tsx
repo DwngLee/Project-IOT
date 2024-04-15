@@ -19,19 +19,30 @@ function ActionHistoryPage() {
   const [startDate, setStartDate] = useState("2024-01-01 00:00");
   const [endDate, setEndDate] = useState(todayDate);
   const [error, setError] = useState(null);
+  const [sortColumn, setSortColumn] = useState("time");
+  const [sortDirection, setSortDirection] = useState("desc");
 
   useEffect(() => {
-    getData(currentPage, limit, startDate, endDate);
-  }, [limit, currentPage, startDate, endDate]);
+    getData(currentPage, limit, startDate, endDate, sortColumn, sortDirection);
+  }, [limit, currentPage, startDate, endDate, sortColumn, sortDirection]);
 
   const getData = async (
     page: number,
     limit: number,
     startDate: string,
-    endDate: string
+    endDate: string,
+    sortColum: string,
+    sortDirection: string
   ) => {
     try {
-      let res = await actionApi.getAll(page, limit, startDate, endDate);
+      let res = await actionApi.getAll(
+        page,
+        limit,
+        startDate,
+        endDate,
+        sortColum,
+        sortDirection
+      );
       if (res && res.content) {
         setPageCount(res.totalPages);
         setListData(res.content);
@@ -55,6 +66,15 @@ function ActionHistoryPage() {
     setEndDate(endDate);
   };
 
+  const handleSort = (column: string) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortColumn(column);
+      setSortDirection("desc"); // Mặc định sort từ mới nhất tới cũ nhất khi chuyển sang cột mới
+    }
+  };
+
   return (
     <Fragment>
       <NarBar></NarBar>
@@ -68,12 +88,50 @@ function ActionHistoryPage() {
         <table className="table table-striped table-sm mt-3 text-center">
           <thead>
             <tr>
-              <th scope="col">
-                ID <i className="fa-solid fa-arrow-up-long"></i>
+              <th scope="col" onClick={() => handleSort("id")}>
+                ID{" "}
+                {sortColumn === "id" && (
+                  <i
+                    className={`fa-solid fa-arrow-${
+                      sortDirection === "asc" ? "up" : "down"
+                    }-long`}
+                    style={{ marginLeft: "4px" }}
+                  ></i>
+                )}
               </th>
-              <th scope="col">DEVICE NAME</th>
-              <th scope="col">ACTION</th>
-              <th scope="col">TIME</th>
+              <th scope="col" onClick={() => handleSort("device_name")}>
+                DEVICE NAME{" "}
+                {sortColumn === "device_name" && (
+                  <i
+                    className={`fa-solid fa-arrow-${
+                      sortDirection === "asc" ? "up" : "down"
+                    }-long`}
+                    style={{ marginLeft: "4px" }}
+                  ></i>
+                )}
+              </th>
+              <th scope="col" onClick={() => handleSort("action")}>
+                ACTION{" "}
+                {sortColumn === "action" && (
+                  <i
+                    className={`fa-solid fa-arrow-${
+                      sortDirection === "asc" ? "up" : "down"
+                    }-long`}
+                    style={{ marginLeft: "4px" }}
+                  ></i>
+                )}
+              </th>
+              <th scope="col" onClick={() => handleSort("time")}>
+                TIME{" "}
+                {sortColumn === "time" && (
+                  <i
+                    className={`fa-solid fa-arrow-${
+                      sortDirection === "asc" ? "up" : "down"
+                    }-long`}
+                    style={{ marginLeft: "4px" }}
+                  ></i>
+                )}
+              </th>
             </tr>
           </thead>
           <tbody>

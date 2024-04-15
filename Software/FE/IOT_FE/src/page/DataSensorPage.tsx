@@ -26,6 +26,8 @@ function DataSensorPage() {
   const [error, setError] = useState(null);
   const [keyword, setKeyword] = useState("");
   const [searchBy, setSearchBy] = useState("ALL");
+  const [sortColumn, setSortColumn] = useState("created_at");
+  const [sortDirection, setSortDirection] = useState("desc");
 
   useEffect(() => {
     getData(
@@ -35,9 +37,21 @@ function DataSensorPage() {
       keyword,
       temperature,
       humidity,
-      light
+      light,
+      sortColumn,
+      sortDirection
     );
-  }, [limit, currentPage, searchBy, keyword, temperature, humidity, light]);
+  }, [
+    limit,
+    currentPage,
+    searchBy,
+    keyword,
+    temperature,
+    humidity,
+    light,
+    sortColumn,
+    sortDirection,
+  ]);
 
   const getData = async (
     currentPage: number,
@@ -46,7 +60,9 @@ function DataSensorPage() {
     keyword: string,
     temperature: { min: number; max: number },
     humidity: { min: number; max: number },
-    light: { min: number; max: number }
+    light: { min: number; max: number },
+    sortColumn: string,
+    sortDirection: string
   ) => {
     try {
       let res = await dataSensorApi.getAll(
@@ -56,7 +72,9 @@ function DataSensorPage() {
         keyword,
         temperature,
         humidity,
-        light
+        light,
+        sortColumn,
+        sortDirection
       );
 
       if (res && res.content) {
@@ -80,6 +98,15 @@ function DataSensorPage() {
   const handleDate = (startDate: string, endDate: string) => {
     setStartDate(startDate);
     setEndDate(endDate);
+  };
+
+  const handleSort = (column: string) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortColumn(column);
+      setSortDirection("desc"); // Mặc định sort từ mới nhất tới cũ nhất khi chuyển sang cột mới
+    }
   };
 
   return (
@@ -166,13 +193,61 @@ function DataSensorPage() {
             <table className="table table-striped table-sm">
               <thead>
                 <tr>
-                  <th scope="col">
-                    ID <i className="fa-solid fa-arrow-up-long"></i>
+                  <th scope="col" onClick={() => handleSort("id")}>
+                    ID{" "}
+                    {sortColumn === "id" && (
+                      <i
+                        className={`fa-solid fa-arrow-${
+                          sortDirection === "asc" ? "up" : "down"
+                        }-long`}
+                        style={{ marginLeft: "4px" }}
+                      ></i>
+                    )}
                   </th>
-                  <th scope="col">TEMPERATURE</th>
-                  <th scope="col">HUMIDITY</th>
-                  <th scope="col">LIGHT</th>
-                  <th scope="col">CREATED AT</th>
+                  <th scope="col" onClick={() => handleSort("temperature")}>
+                    TEMPERATURE{" "}
+                    {sortColumn === "temperature" && (
+                      <i
+                        className={`fa-solid fa-arrow-${
+                          sortDirection === "asc" ? "up" : "down"
+                        }-long`}
+                        style={{ marginLeft: "4px" }}
+                      ></i>
+                    )}
+                  </th>
+                  <th scope="col" onClick={() => handleSort("humidity")}>
+                    HUMIDITY{" "}
+                    {sortColumn === "humidity" && (
+                      <i
+                        className={`fa-solid fa-arrow-${
+                          sortDirection === "asc" ? "up" : "down"
+                        }-long`}
+                        style={{ marginLeft: "4px" }}
+                      ></i>
+                    )}
+                  </th>
+                  <th scope="col" onClick={() => handleSort("light")}>
+                    LIGHT{" "}
+                    {sortColumn === "light" && (
+                      <i
+                        className={`fa-solid fa-arrow-${
+                          sortDirection === "asc" ? "up" : "down"
+                        }-long`}
+                        style={{ marginLeft: "4px" }}
+                      ></i>
+                    )}
+                  </th>
+                  <th scope="col" onClick={() => handleSort("created_at")}>
+                    CREATED AT{" "}
+                    {sortColumn === "created_at" && (
+                      <i
+                        className={`fa-solid fa-arrow-${
+                          sortDirection === "asc" ? "up" : "down"
+                        }-long`}
+                        style={{ marginLeft: "4px" }}
+                      ></i>
+                    )}
+                  </th>
                 </tr>
               </thead>
               <tbody>

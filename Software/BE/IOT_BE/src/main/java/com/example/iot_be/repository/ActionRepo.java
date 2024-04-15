@@ -10,16 +10,19 @@ import java.util.List;
 
 @Repository
 public interface ActionRepo extends JpaRepository<Action, Integer> {
-    @Query("SELECT a FROM Action a WHERE a.time BETWEEN ?1 AND ?2 ORDER BY a.time DESC")
-    List<Action> searchByTime(LocalDateTime startDate, LocalDateTime endDate);
+    @Query(value = "SELECT * FROM action_history WHERE time BETWEEN :startDate AND :endDate " +
+            "ORDER BY " +
+            "CASE WHEN :sortColumn = 'id' AND :sortDirection = 'ASC' THEN id END ASC, " +
+            "CASE WHEN :sortColumn = 'id' AND :sortDirection = 'DESC' THEN id END DESC, " +
+            "CASE WHEN :sortColumn = 'device_name' AND :sortDirection = 'ASC' THEN device_name END ASC, " +
+            "CASE WHEN :sortColumn = 'device_name' AND :sortDirection = 'DESC' THEN device_name END DESC, " +
+            "CASE WHEN :sortColumn = 'action' AND :sortDirection = 'ASC' THEN action END ASC, " +
+            "CASE WHEN :sortColumn = 'action' AND :sortDirection = 'DESC' THEN action END DESC, " +
+            "CASE WHEN :sortColumn = 'time' AND :sortDirection = 'ASC' THEN time END ASC, " +
+            "CASE WHEN :sortColumn = 'time' AND :sortDirection = 'DESC' THEN time END DESC "
+            , nativeQuery = true)
+    List<Action> searchByTime(LocalDateTime startDate, LocalDateTime endDate, String sortColumn, String sortDirection);
 
-    @Query(value = "SELECT ah.id, ah.device_name, ah.action, ah.time " +
-            "FROM action_history AS ah " +
-            "JOIN (SELECT device_name, MAX(time) AS latest_time " +
-            "      FROM action_history " +
-            "      WHERE device_name IN ('den', 'quat') " +
-            "      GROUP BY device_name) AS subq " +
-            "ON ah.device_name = subq.device_name AND ah.time = subq.latest_time", nativeQuery = true)
-    List<Action> getLastAction();
+
 
 }
