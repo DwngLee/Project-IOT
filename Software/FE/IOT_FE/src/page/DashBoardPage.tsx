@@ -57,6 +57,7 @@ function Dashboard() {
 
       client.subscribe("/topic/device", (message) => {
         const receivedMessage = JSON.parse(message.body);
+        console.log(receivedMessage);
         setDeviceState(receivedMessage.deviceName, receivedMessage.action);
       });
       setStompClient(client);
