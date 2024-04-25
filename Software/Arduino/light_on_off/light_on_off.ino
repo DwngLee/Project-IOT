@@ -105,7 +105,7 @@ void reconnect() {
     // Attempt to connect
     if (client.connect(clientId.c_str(), broker_username, broker_password)) {
       Serial.println("connected");
-      client.subscribe("device/led");
+      client.subscribe("device");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());

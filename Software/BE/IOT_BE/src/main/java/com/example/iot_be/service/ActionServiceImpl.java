@@ -24,6 +24,8 @@ public class ActionServiceImpl implements ActionService {
     ActionRepo actionRepo;
     MqttService mqttService;
 
+    private final static int MAX_LIMIT = 50;
+
     Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .create();
@@ -41,6 +43,8 @@ public class ActionServiceImpl implements ActionService {
         if (endDate == null) {
             endDate = LocalDateTime.now();
         }
+
+        limit = limit > MAX_LIMIT ? MAX_LIMIT : limit;
 
         Pageable pageable = PageRequest.of(pageNo, limit);
 

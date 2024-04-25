@@ -19,7 +19,7 @@ const dataSensorApi = {
 
   getData4DashBoard: (page: number, limit: number) => {
     return axios.get(
-      `data?page=${page}&limit=${limit}&minTemp=&maxTemp=&minHumid=&maxHumid=&minLight=&maxLight=`
+      `data?page=${page}&limit=${limit}&minTemp=&maxTemp=&minHumid=&maxHumid=&minLight=&maxLight=&sortDirection=DESC`
     );
   },
   searchData: (

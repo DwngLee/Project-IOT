@@ -1,7 +1,11 @@
 package com.example.iot_be;
+import com.example.iot_be.websocket.WebSocketConstraint;
+import com.example.iot_be.websocket.WebSocketService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+
+import java.util.Scanner;
 
 @SpringBootApplication
 public class IotBeApplication {
@@ -15,7 +19,7 @@ public class IotBeApplication {
 //            if(command.equals("e")){
 //                break;
 //            }
-//            webSocketService.sendMessageToClient("{\"nickname\":\"Server\",\"content\":\"checking\"}");
+//            webSocketService.sendMessageToClient(WebSocketConstraint.DEVICE_TOPIC, command);
 //        }
 
     }

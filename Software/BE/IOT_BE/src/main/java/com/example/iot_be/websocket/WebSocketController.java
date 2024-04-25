@@ -25,7 +25,7 @@ public class WebSocketController {
     @MessageMapping("/device")
     public void sendAction(@Payload Action action){
         try{
-            mqttService.sendMessageToMqtt("device/led", gson.toJson(action));
+            mqttService.sendMessageToMqtt("device", gson.toJson(action));
         }catch (Exception e){
             throw  new RuntimeException(e);
         }
