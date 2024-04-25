@@ -1,7 +1,7 @@
 import Card from "../components/CardComponent";
 import { Line } from "react-chartjs-2";
 import { LiaTemperatureHighSolid } from "react-icons/lia";
-import { WiHumidity } from "react-icons/wi";
+import { WiDust, WiHumidity } from "react-icons/wi";
 import { CiLight } from "react-icons/ci";
 import dataSensorApi from "../services/dataSensorApi";
 import Button from "../components/ButtonComponent";
@@ -36,10 +36,12 @@ function Dashboard() {
   const [temperature, setTemperature] = useState(0);
   const [humidity, setHumidity] = useState(0);
   const [light, setLight] = useState(0);
+  const [dust, setDust] = useState(0);
   const [labels, setLabels] = useState([]);
   const [temperatureList, setTemperatureList] = useState([]);
   const [humidityList, setHumidityList] = useState([]);
   const [lightList, setLightList] = useState([]);
+  const [dustList, setDustList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [stompClient, setStompClient] = useState(null);
@@ -103,12 +105,14 @@ function Dashboard() {
           setTemperature(res.content[0].temperature);
           setHumidity(res.content[0].humidity);
           setLight(res.content[0].light);
+          setDust(res.content[0].dust);
           setLabels(res.content.map((data) => data.created_at).reverse());
           setTemperatureList(
             res.content.map((data) => data.temperature).reverse()
           );
           setHumidityList(res.content.map((data) => data.humidity).reverse());
           setLightList(res.content.map((data) => data.light).reverse());
+          setDustList(res.content.map((data) => data.dust).reverse());
           setIsLoading(false);
         }
       } catch (e) {
@@ -121,10 +125,12 @@ function Dashboard() {
   const defaultTempColor = "#ff6666";
   const defaultHumidColor = "#8080ff";
   const defaultLightColor = "#ffffff";
+  const defaultDustColor = "#ebcb99";
 
   let secondTempColor = "";
   let secondHumidColor = "";
   let secondLightColor = "";
+  let secondDustColor = "";
 
   const setTemperatureColor = () => {
     let color = "#ff8080";
@@ -162,9 +168,22 @@ function Dashboard() {
     secondLightColor = color;
   };
 
+  const setDustColor = () => {
+    let color = "#dca44c";
+    if (dust < 300) {
+      color = "#dca44c";
+    } else if (dust >= 300 && dust < 600) {
+      color = "#d79732";
+    } else if (dust >= 600) {
+      color = "#ce7e00";
+    }
+    secondDustColor = color;
+  };
+
   setTemperatureColor();
   setHumidColor();
   setLightColor();
+  setDustColor();
 
   const options = {
     responsive: true,
@@ -201,7 +220,7 @@ function Dashboard() {
         },
         title: {
           display: true,
-          text: "Light",
+          text: "Light / Dust",
         },
       },
     },
@@ -234,6 +253,14 @@ function Dashboard() {
         yAxisID: "y1",
         tension: 0.4,
       },
+      {
+        label: "Độ bụi",
+        data: dustList,
+        borderColor: "#ce7e00",
+        backgroundColor: "#dca44c",
+        yAxisID: "y1",
+        tension: 0.4,
+      },
     ],
   };
 
@@ -252,7 +279,7 @@ function Dashboard() {
         <div>
           <div className="container text-center">
             <div className="row">
-              <div className="col-4">
+              <div className="col-3">
                 <div className="py-3">
                   <Card
                     heading="Nhiệt độ"
@@ -264,7 +291,7 @@ function Dashboard() {
                 </div>
               </div>
 
-              <div className="col-4">
+              <div className="col-3">
                 <div className="py-3">
                   <Card
                     heading="Độ ẩm"
@@ -276,7 +303,7 @@ function Dashboard() {
                 </div>
               </div>
 
-              <div className="col-4">
+              <div className="col-3">
                 <div className="py-3">
                   <Card
                     heading="Ánh sáng"
@@ -284,6 +311,18 @@ function Dashboard() {
                     icon={<CiLight></CiLight>}
                     firstColor={defaultLightColor}
                     secondColor={secondLightColor}
+                  ></Card>
+                </div>
+              </div>
+
+              <div className="col-3">
+                <div className="py-3">
+                  <Card
+                    heading="Độ bụi"
+                    data={dust.toString() + " %"}
+                    icon={<WiDust></WiDust>}
+                    firstColor={defaultDustColor}
+                    secondColor={secondDustColor}
                   ></Card>
                 </div>
               </div>

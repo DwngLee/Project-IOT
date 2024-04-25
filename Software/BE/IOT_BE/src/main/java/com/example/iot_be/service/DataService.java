@@ -15,6 +15,8 @@ public interface DataService {
                              double maxHumid,
                              double minLight,
                              double maxLight,
+                             double minDust,
+                             double maxDust,
                              String sortColum,
                              String sortDirection);
 }

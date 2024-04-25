@@ -4,6 +4,7 @@ interface DataSensor {
   temperature: number;
   humidity: number;
   light: number;
+  dust: number;
   created_at: Date;
 }
 

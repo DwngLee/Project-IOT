@@ -25,13 +25,17 @@ const char *data_topic = "Data";
 const char *action_topic = "Action";
 const char *broker_username = "user1";
 const char *broker_password = "1234";
+
+const int MAX_VALUE = 600;
+const int MIN_VALUE = 100;
+
 WiFiClient espClient;
 PubSubClient client(espClient);
 
 unsigned long lastMsg = 0;
 String msgStr = "";
-float temp, hum;
-int ldrValue;
+float tempValue, humValue;
+int ldrValue, dustValue;
 
 void setup_wifi() {
 
@@ -59,6 +63,10 @@ void setup_wifi() {
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
+}
+
+int getRandomValue(){
+  return random(MIN_VALUE, MAX_VALUE + 1);
 }
 
 void callback(char *topic, byte *payload, unsigned int length) {
@@ -162,7 +170,7 @@ void loop() {
       Serial.print(F("Temperature: "));
       Serial.print(event.temperature);
       Serial.println(F("°C"));
-      temp = event.temperature;
+      tempValue = event.temperature;
     }
     // Get humidity event and print its value.
     dht.humidity().getEvent(&event);
@@ -173,7 +181,7 @@ void loop() {
       Serial.print(F("Humidity: "));
       Serial.print(event.relative_humidity);
       Serial.println(F("%"));
-      hum = event.relative_humidity;
+      humValue = event.relative_humidity;
     }
 
     // Read LDR sensor value
@@ -186,12 +194,16 @@ void loop() {
       Serial.println("Failed to read LDR sensor value!");
     }
 
+    dustValue = getRandomValue();
+    Serial.print(F("Dust: "));
+      Serial.print(dustValue);
 
     // Create JSON object
     StaticJsonDocument<200> jsonDoc;
-    jsonDoc["temperature"] = temp;
-    jsonDoc["humidity"] = hum;
+    jsonDoc["temperature"] = tempValue;
+    jsonDoc["humidity"] = humValue;
     jsonDoc["light"] = ldrValue;
+    jsonDoc["dust"] = dustValue;
 
 
     // Serialize JSON to string

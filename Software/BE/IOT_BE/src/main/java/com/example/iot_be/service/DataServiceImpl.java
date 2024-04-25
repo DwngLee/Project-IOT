@@ -29,6 +29,8 @@ public class DataServiceImpl implements DataService {
                                     double maxHumid,
                                     double minLight,
                                     double maxLight,
+                                    double minDust,
+                                    double maxDust,
                                     String sortColumn,
                                     String sortDirection) {
         //Danh cho trung hop yeu cau search theo thoi gian
@@ -45,9 +47,9 @@ public class DataServiceImpl implements DataService {
         Sort.Direction sort = Sort.Direction.DESC;
 
         if(searchBy.equals("ALL")){
-                list = dataSensorRepo.getAllData(keyword, minTemp, maxTemp, minHumid, maxHumid, minLight, maxLight, sortColumn, sortDirection);
+                list = dataSensorRepo.getAllData(keyword, minTemp, maxTemp, minHumid, maxHumid, minLight, maxLight, minDust, maxDust, sortColumn, sortDirection);
         }else{
-            list = dataSensorRepo.getDataByFilter(searchBy, keyword, minTemp, maxTemp, minHumid, maxHumid, minLight, maxLight, sortColumn, sortDirection);
+            list = dataSensorRepo.getDataByFilter(searchBy, keyword, minTemp, maxTemp, minHumid, maxHumid, minLight, maxLight, minDust, maxDust, sortColumn, sortDirection);
         }
 
         if (list.size() == 0) {

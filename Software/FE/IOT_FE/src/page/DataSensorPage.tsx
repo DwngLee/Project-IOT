@@ -23,6 +23,7 @@ function DataSensorPage() {
   const [temperature, setTemperature] = useState({ min: 0, max: 100 });
   const [humidity, setHumidity] = useState({ min: 0, max: 100 });
   const [light, setLight] = useState({ min: 0, max: 1000 });
+  const [dust, setDust] = useState({ min: 100, max: 1000 });
   const [error, setError] = useState(null);
   const [keyword, setKeyword] = useState("");
   const [searchBy, setSearchBy] = useState("ALL");
@@ -38,6 +39,7 @@ function DataSensorPage() {
       temperature,
       humidity,
       light,
+      dust,
       sortColumn,
       sortDirection
     );
@@ -49,6 +51,7 @@ function DataSensorPage() {
     temperature,
     humidity,
     light,
+    dust,
     sortColumn,
     sortDirection,
   ]);
@@ -61,6 +64,7 @@ function DataSensorPage() {
     temperature: { min: number; max: number },
     humidity: { min: number; max: number },
     light: { min: number; max: number },
+    dust: { min: number; max: number },
     sortColumn: string,
     sortDirection: string
   ) => {
@@ -73,6 +77,7 @@ function DataSensorPage() {
         temperature,
         humidity,
         light,
+        dust,
         sortColumn,
         sortDirection
       );
@@ -142,6 +147,7 @@ function DataSensorPage() {
                 <option value="temperature">Temperature</option>
                 <option value="humidity">Humidity</option>
                 <option value="light">Light</option>
+                <option value="dust">Dust</option>
                 <option value="created_at">Created At</option>
               </select>
             </div>
@@ -152,7 +158,7 @@ function DataSensorPage() {
           <div className="col-md-3">
             <div
               className="vstack gap-3 container px-3 shadow bg-body-tertiary rounded "
-              style={{ height: "350px" }}
+              style={{ height: "450px" }}
             >
               <div className="my-4 container">
                 <MultiRangeSlider
@@ -172,7 +178,7 @@ function DataSensorPage() {
                   rangeLabel="Humidity"
                   onChange={debounce(
                     ({ min, max }) => setHumidity({ min, max }),
-                    1000
+                    100
                   )}
                 />
               </div>
@@ -183,6 +189,17 @@ function DataSensorPage() {
                   rangeLabel="Light"
                   onChange={debounce(
                     ({ min, max }) => setLight({ min, max }),
+                    1000
+                  )}
+                />
+              </div>
+              <div className="my-4 container">
+                <MultiRangeSlider
+                  min={0}
+                  max={1000}
+                  rangeLabel="Dust"
+                  onChange={debounce(
+                    ({ min, max }) => setDust({ min, max }),
                     1000
                   )}
                 />
@@ -237,6 +254,17 @@ function DataSensorPage() {
                       ></i>
                     )}
                   </th>
+                  <th scope="col" onClick={() => handleSort("dust")}>
+                    DUST{" "}
+                    {sortColumn === "dust" && (
+                      <i
+                        className={`fa-solid fa-arrow-${
+                          sortDirection === "asc" ? "up" : "down"
+                        }-long`}
+                        style={{ marginLeft: "4px" }}
+                      ></i>
+                    )}
+                  </th>
                   <th scope="col" onClick={() => handleSort("created_at")}>
                     CREATED AT{" "}
                     {sortColumn === "created_at" && (
@@ -258,6 +286,7 @@ function DataSensorPage() {
                       <td>{item.temperature}</td>
                       <td>{item.humidity}</td>
                       <td>{item.light}</td>
+                      <td>{item.dust}</td>
                       <td>
                         {format(
                           new Date(item.created_at),

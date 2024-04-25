@@ -24,6 +24,7 @@ public class DataSensor {
     private double temperature;
     private double humidity;
     private double light;
+    private int dust;
     @Column(name = "created_at")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonProperty("created_at")

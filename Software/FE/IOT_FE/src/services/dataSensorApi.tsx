@@ -9,11 +9,12 @@ const dataSensorApi = {
     temperature: { min: number; max: number },
     humidity: { min: number; max: number },
     light: { min: number; max: number },
+    dust: { min: number; max: number },
     sortColum: string,
     sortDirection: string
   ) => {
     return axios.get(
-      `data?page=${page}&limit=${limit}&searchBy=${searchBy}&keyword=${keyword}&minTemp=${temperature.min}&maxTemp=${temperature.max}&minHumid=${humidity.min}&maxHumid=${humidity.max}&minLight=${light.min}&maxLight=${light.max}&sortColumn=${sortColum}&sortDirection=${sortDirection}`
+      `data?page=${page}&limit=${limit}&searchBy=${searchBy}&keyword=${keyword}&minTemp=${temperature.min}&maxTemp=${temperature.max}&minHumid=${humidity.min}&maxHumid=${humidity.max}&minLight=${light.min}&maxLight=${light.max}&minDust=${dust.min}&maxDust=${dust.max}&sortColumn=${sortColum}&sortDirection=${sortDirection}`
     );
   },
 

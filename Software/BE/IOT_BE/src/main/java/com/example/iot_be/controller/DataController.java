@@ -36,19 +36,21 @@ public class DataController {
     })
     public ResponseEntity<Page<DataSensor>> getAllData(@RequestParam(name = "page", defaultValue = "0") int pageNo,
                                                        @RequestParam(name = "limit", defaultValue = "5") int limit,
-                                                       @RequestParam(name = "minTemp", defaultValue = "0") double minTemp,
-                                                       @RequestParam(name = "maxTemp", defaultValue = "100") double maxTemp,
-                                                       @RequestParam(name = "minHumid", defaultValue = "0") double minHumid,
-                                                       @RequestParam(name = "maxHumid", defaultValue = "100") double maxHumid,
-                                                       @RequestParam(name = "minLight", defaultValue = "0") double minLight,
-                                                       @RequestParam(name = "maxLight", defaultValue = "1000") double maxLight,
-                                                       @RequestParam(name = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime startDate,
-                                                       @RequestParam(name = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime endDate,
-                                                       @RequestParam(name = "keyword", defaultValue = "") String keyword,
-                                                       @RequestParam(name = "searchBy", defaultValue = "ALL") String searchBy,
-                                                       @RequestParam(name = "sortColumn", defaultValue = "created_at") String sortColumn,
-                                                       @RequestParam(name = "sortDirection", defaultValue = "asc") String sortDirection) {
-        return new ResponseEntity<>(dataSensorService.getData(pageNo, limit, keyword, searchBy, minTemp, maxTemp, minHumid, maxHumid, minLight, maxLight, sortColumn, sortDirection), HttpStatus.OK);
+                                                       @RequestParam(defaultValue = "0") double minTemp,
+                                                       @RequestParam(defaultValue = "100") double maxTemp,
+                                                       @RequestParam(defaultValue = "0") double minHumid,
+                                                       @RequestParam(defaultValue = "100") double maxHumid,
+                                                       @RequestParam(defaultValue = "0") double minLight,
+                                                       @RequestParam(defaultValue = "1000") double maxLight,
+                                                       @RequestParam(defaultValue = "0") double minDust,
+                                                       @RequestParam(defaultValue = "1000") double maxDust,
+                                                       @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime startDate,
+                                                       @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") LocalDateTime endDate,
+                                                       @RequestParam(defaultValue = "") String keyword,
+                                                       @RequestParam(defaultValue = "ALL") String searchBy,
+                                                       @RequestParam(defaultValue = "created_at") String sortColumn,
+                                                       @RequestParam(defaultValue = "asc") String sortDirection) {
+        return new ResponseEntity<>(dataSensorService.getData(pageNo, limit, keyword, searchBy, minTemp, maxTemp, minHumid, maxHumid, minLight, maxLight, minDust, maxDust, sortColumn, sortDirection), HttpStatus.OK);
     }
 
 
