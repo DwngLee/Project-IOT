@@ -45,7 +45,8 @@ function Dashboard() {
   const [stompClient, setStompClient] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
 
-  const { lightState, fanState, setDeviceState } = useDeviceContext();
+  const { lightState, fanState, light2State, setDeviceState } =
+    useDeviceContext();
 
   // Socket nhan trang thai thiet bi
   useEffect(() => {
@@ -296,21 +297,43 @@ function Dashboard() {
                 <Line options={options} data={data} />
               </div>
               <div className="col-4 mt-4 ">
-                <div className="shadow  rounded">
-                  <Button
-                    name="Fan"
-                    state={fanState}
-                    onClick={() =>
-                      sendMessage("quat", fanState === "on" ? "off" : "on")
-                    }
-                  ></Button>
-                  <Button
-                    name="Light"
-                    state={lightState}
-                    onClick={() => {
-                      sendMessage("den", lightState === "on" ? "off" : "on");
-                    }}
-                  ></Button>
+                <div className="shadow  rounded p-3">
+                  <div className="row mb-3">
+                    <div className="col">
+                      <Button
+                        name="Light2"
+                        state={light2State}
+                        onClick={() => {
+                          sendMessage(
+                            "den 2",
+                            light2State === "on" ? "off" : "on"
+                          );
+                        }}
+                      ></Button>
+                    </div>
+                    <div className="col">
+                      <Button
+                        name="Light"
+                        state={lightState}
+                        onClick={() => {
+                          sendMessage(
+                            "den",
+                            lightState === "on" ? "off" : "on"
+                          );
+                        }}
+                      ></Button>
+                    </div>
+                  </div>
+                  <hr />
+                  <div className="row">
+                    <Button
+                      name="Fan"
+                      state={fanState}
+                      onClick={() =>
+                        sendMessage("quat", fanState === "on" ? "off" : "on")
+                      }
+                    ></Button>
+                  </div>
                 </div>
               </div>
             </div>

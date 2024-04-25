@@ -1,9 +1,9 @@
-import axios from "axios";
 import { Fragment, useState, useEffect } from "react";
 import fan_off from "../image/fan-off.png";
 import fan_on from "../image/fan-on.gif";
 import blub_off from "../image/bulb-off.png";
 import blub_on from "../image/bulb-on.png";
+import Switch from "react-switch";
 interface Props {
   name: string;
   state: string;
@@ -26,6 +26,12 @@ function Button({ name, state, onClick }: Props) {
         setIsOn(state === "on" ? true : false);
       }, [name, state]);
       break;
+    case "Light2":
+      useEffect(() => {
+        setImgSrc(state === "on" ? blub_on : blub_off);
+        setIsOn(state === "on" ? true : false);
+      }, [name, state]);
+      break;
     default:
       break;
   }
@@ -34,33 +40,20 @@ function Button({ name, state, onClick }: Props) {
     <Fragment>
       <div
         className="d-flex align-items-center justify-content-center"
-        style={{ height: "100px" }}
+        style={{ height: "140px", paddingBottom: "25px" }}
       >
         <img
           src={imgSrc}
-          className="img-fluid mt-4"
+          className="img-fluid"
           style={{
-            height: "125%",
+            height: "100%",
             width: "auto",
           }}
           alt=""
         />
       </div>
-      <div className="row p-4 m-3">
-        <button
-          type="button"
-          className={`btn ${isOn ? "btn-primary" : "btn-secondary"} col mx-3`}
-          onClick={onClick}
-        >
-          On
-        </button>
-        <button
-          type="button"
-          className={`btn ${isOn ? "btn-secondary" : "btn-danger"} col mx-3`}
-          onClick={onClick}
-        >
-          Off
-        </button>
+      <div className="d-flex justify-content-center mb-2">
+        <Switch onChange={onClick} checked={isOn} />
       </div>
     </Fragment>
   );

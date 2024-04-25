@@ -11,6 +11,7 @@
 #define DHTTYPE DHT11
 #define LED_1 "den"
 #define LED_2 "quat"
+#define LED_3 "den 2"
 
 DHT_Unified dht(DHTPIN, DHTTYPE);
 
@@ -91,6 +92,8 @@ void callback(char *topic, byte *payload, unsigned int length) {
     digitalWrite(D6, strcmp(state, "on") == 0 ? HIGH : LOW);
   } else if (strcmp(device_name, LED_2) == 0) {
     digitalWrite(D7, strcmp(state, "on") == 0 ? HIGH : LOW);
+  }else if(strcmp(device_name, LED_3) == 0){
+    digitalWrite(D0, strcmp(state, "on") == 0 ? HIGH : LOW);
   }
   client.publish(action_topic, json);
 }
@@ -118,6 +121,7 @@ void reconnect() {
 void setup() {
   pinMode(D6, OUTPUT);
   pinMode(D7, OUTPUT);
+  pinMode(D0, OUTPUT);
 
   dht.begin();
   sensor_t sensor;
@@ -131,8 +135,6 @@ void setup() {
   setup_wifi();
   client.setServer(mqtt_server, mqtt_port);
   client.setCallback(callback);
-
-  configTime(7 * 3600, 0, "pool.ntp.org", "time.nist.gov");
 
   Serial.println("\nWaiting for time");
   while (!time(nullptr)) {
