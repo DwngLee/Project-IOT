@@ -27,6 +27,7 @@
     "react-stomp": "^5.1.0",
     "sockjs": "^0.3.24",
     "sockjs-client": "^1.6.1",
+    "sonner": "^1.4.41",
     "stompjs": "^2.3.3"
   },
   "devDependencies": {

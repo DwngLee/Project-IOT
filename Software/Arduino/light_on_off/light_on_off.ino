@@ -6,8 +6,8 @@
 #include <TimeLib.h>
 #include <ArduinoJson.h>
 
-#define DHTPIN D5  
-#define LDRPIN A0  
+#define DHTPIN D5
+#define LDRPIN A0
 #define DHTTYPE DHT11
 #define LED_1 "den"
 #define LED_2 "quat"
@@ -16,15 +16,22 @@ DHT_Unified dht(DHTPIN, DHTTYPE);
 
 uint32_t delayMS;
 
-
 const char *ssid = "Le Trong Tien_Tang2";
 const char *password = "21121970";
 const char *mqtt_server = "192.168.1.2";
 const int mqtt_port = 1884;
 const char *data_topic = "Data";
 const char *action_topic = "Action";
+const char *alert_topic = "Alert";
 const char *broker_username = "user1";
 const char *broker_password = "1234";
+
+const int ledPin = D6;
+const int fanPin = D7;
+const int alertPin = D0;
+const int SAFETY_VALUE = 600;
+bool isAlert = false;
+
 WiFiClient espClient;
 PubSubClient client(espClient);
 
@@ -32,6 +39,7 @@ unsigned long lastMsg = 0;
 String msgStr = "";
 float temp, hum;
 int ldrValue;
+
 
 void setup_wifi() {
 
@@ -116,8 +124,9 @@ void reconnect() {
 }
 
 void setup() {
-  pinMode(D6, OUTPUT);
-  pinMode(D7, OUTPUT);
+  pinMode(ledPin, OUTPUT);
+  pinMode(fanPin, OUTPUT);
+  pinMode(alertPin, OUTPUT);
 
   dht.begin();
   sensor_t sensor;
@@ -132,7 +141,6 @@ void setup() {
   client.setServer(mqtt_server, mqtt_port);
   client.setCallback(callback);
 
-  configTime(7 * 3600, 0, "pool.ntp.org", "time.nist.gov");
 
   Serial.println("\nWaiting for time");
   while (!time(nullptr)) {
@@ -142,6 +150,27 @@ void setup() {
   Serial.println("");
 }
 
+
+void blinkLED() {
+  digitalWrite(alertPin, HIGH); // Bật đèn LED
+  delay(100); // Chờ 500 milliseconds (0.5 giây)
+  digitalWrite(alertPin, LOW); // Tắt đèn LED
+  delay(100); // Chờ 500 milliseconds (0.5 giây)
+}
+
+void sendAlertToClient() {
+  StaticJsonDocument<200> jsonDoc;
+  jsonDoc["sensorName"] = "light sensor";
+  jsonDoc["value"] = ldrValue;
+  jsonDoc["isAlert"] = isAlert;
+
+  // Serialize JSON to string
+  String jsonStr;
+  serializeJson(jsonDoc, jsonStr);
+  client.publish(alert_topic, jsonStr.c_str());
+  blinkLED();
+}
+
 void loop() {
   if (!client.connected()) {
     reconnect();
@@ -149,6 +178,9 @@ void loop() {
   client.loop();  //Duy tri ket noi toi mqtt
 
   unsigned long now = millis();
+   if(isAlert){
+      blinkLED();
+    }
   if (now - lastMsg > 2000) {
     lastMsg = now;
 
@@ -200,6 +232,18 @@ void loop() {
 
     // Publish JSON string to MQTT topic
     client.publish(data_topic, jsonStr.c_str());
+
+    if(ldrValue > SAFETY_VALUE && !isAlert){
+      isAlert = true;
+      sendAlertToClient();
+    }
+
+    if(ldrValue < SAFETY_VALUE && isAlert){
+      isAlert = false;
+      sendAlertToClient();
+    }
+
+   
 
     delay(50);
   }

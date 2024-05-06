@@ -1,0 +1,25 @@
+.notification {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: #ff0000; /* Màu nền của thông báo */
+    color: #ffffff; /* Màu chữ của thông báo */
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer; /* Biến con trỏ thành bàn tay khi người dùng hover và click */
+    margin-bottom: 10px; /* Khoảng cách giữa các thông báo */
+    width: 300px; /* Độ rộng của thông báo */
+  }
+  
+  
+  .notification-content {
+    padding: 10px;
+  }
+  
+  .notification-title {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  

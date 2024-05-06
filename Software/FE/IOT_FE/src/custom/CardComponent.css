@@ -1,0 +1,19 @@
+
+  
+  .alert {
+    animation: blink 1s infinite alternate;
+  }
+  
+  .blinking-card {
+    transition: background-color 0.5s ease-in-out;
+  }
+  
+  @keyframes blink {
+    0% {
+      background-color: #f0f0f0;
+    }
+    100% {
+      background-color: #d40606;
+    }
+  }
+  

@@ -27,6 +27,7 @@ public class MqttConfig {
 
         mqttClient.subscribe(MqttConstraint.DATA_TOPIC, mqttMessageListener);
         mqttClient.subscribe(MqttConstraint.ACTION_TOPIC, mqttMessageListener);
+        mqttClient.subscribe(MqttConstraint.ALERT_TOPIC, mqttMessageListener);
 
         return mqttClient;
     }

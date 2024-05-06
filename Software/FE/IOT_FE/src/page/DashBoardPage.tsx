@@ -6,8 +6,10 @@ import { CiLight } from "react-icons/ci";
 import dataSensorApi from "../services/dataSensorApi";
 import Button from "../components/ButtonComponent";
 import NarBar from "../components/NavBarComponent";
+import NotificationComponent from "../components/NotificationCoponent";
 import { useEffect, useState } from "react";
 import { useDeviceContext } from "../context/DeviceContext";
+import { Toaster, toast } from "sonner";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -40,12 +42,18 @@ function Dashboard() {
   const [temperatureList, setTemperatureList] = useState([]);
   const [humidityList, setHumidityList] = useState([]);
   const [lightList, setLightList] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [stompClient, setStompClient] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   const { lightState, fanState, setDeviceState } = useDeviceContext();
+
+  const SAFETY_TEMP_VALUE = 35;
+  const SAFETY_HUMIDITY_VALUE = 80;
+  const SAFETY_LIGHT_VALUE = 600;
 
   // Socket nhan trang thai thiet bi
   useEffect(() => {
@@ -60,6 +68,12 @@ function Dashboard() {
         console.log(receivedMessage);
         setDeviceState(receivedMessage.deviceName, receivedMessage.action);
       });
+
+      client.subscribe("/topic/alert", (message) => {
+        const receivedMessage = JSON.parse(message.body);
+        console.log(receivedMessage);
+      });
+
       setStompClient(client);
     });
 
@@ -70,6 +84,18 @@ function Dashboard() {
       }
     };
   }, [isConnected]);
+
+  useEffect(() => {
+    if (temperature > SAFETY_TEMP_VALUE) {
+      toast.error("Nhiệt độ đang quá cao");
+    }
+    if (humidity > SAFETY_HUMIDITY_VALUE) {
+      toast.error("Độ ẩm đang quá cao");
+    }
+    if (light > SAFETY_LIGHT_VALUE) {
+      toast.error("Ánh sáng đang quá sáng");
+    }
+  }, [temperature, humidity, light]);
 
   const sendMessage = (deviceName: string, state: string) => {
     try {
@@ -239,6 +265,7 @@ function Dashboard() {
 
   return (
     <>
+      <Toaster position="bottom-left" richColors></Toaster>
       <NarBar></NarBar>
       {error && <p className="text-center fw-bold text-danger fs-3">{error}</p>}
       {isLoading && (
@@ -260,6 +287,7 @@ function Dashboard() {
                     icon={<LiaTemperatureHighSolid></LiaTemperatureHighSolid>}
                     firstColor={defaultTempColor}
                     secondColor={secondTempColor}
+                    isAlert={temperature > SAFETY_TEMP_VALUE ? true : false}
                   ></Card>
                 </div>
               </div>
@@ -272,6 +300,7 @@ function Dashboard() {
                     icon={<WiHumidity></WiHumidity>}
                     firstColor={defaultHumidColor}
                     secondColor={secondHumidColor}
+                    isAlert={humidity > SAFETY_HUMIDITY_VALUE ? true : false}
                   ></Card>
                 </div>
               </div>
@@ -284,6 +313,7 @@ function Dashboard() {
                     icon={<CiLight></CiLight>}
                     firstColor={defaultLightColor}
                     secondColor={secondLightColor}
+                    isAlert={light > SAFETY_LIGHT_VALUE ? true : false}
                   ></Card>
                 </div>
               </div>

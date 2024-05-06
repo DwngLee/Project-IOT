@@ -43,10 +43,10 @@ public interface DataRepo extends JpaRepository<DataSensor, Integer> {
 
     @Query(value = "SELECT * FROM data_sensor " +
             "WHERE (id LIKE %:keyword% " +
-            "    OR temperature LIKE %:keyword% " +
-            "    OR humidity LIKE %:keyword% " +
-            "    OR light LIKE %:keyword% " +
-            "    OR created_at LIKE %:keyword%) " +
+            "    OR CONCAT(temperature, '') LIKE %:keyword% " +
+            "    OR CONCAT(humidity,'') LIKE %:keyword% " +
+            "    OR CONCAT(light, '') LIKE %:keyword% " +
+            "    OR CONCAT(created_at, '') LIKE %:keyword%) " +
             "AND temperature BETWEEN :minTemp AND :maxTemp " +
             "AND humidity BETWEEN :minHumid AND :maxHumid " +
             "AND light BETWEEN :minLight AND :maxLight " +
