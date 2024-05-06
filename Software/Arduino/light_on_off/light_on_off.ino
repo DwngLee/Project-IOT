@@ -18,9 +18,9 @@ DHT_Unified dht(DHTPIN, DHTTYPE);
 uint32_t delayMS;
 
 
-const char *ssid = "Le Trong Tien_Tang2";
-const char *password = "21121970";
-const char *mqtt_server = "192.168.1.2";
+const char *ssid = "Duong Le Pro";
+const char *password = "abcd1234";
+const char *mqtt_server = "192.168.43.59";
 const int mqtt_port = 1884;
 const char *data_topic = "Data";
 const char *action_topic = "Action";
@@ -33,6 +33,11 @@ unsigned long lastMsg = 0;
 String msgStr = "";
 float temp, hum;
 int ldrValue;
+
+const int ledPin = D6;
+const int led2Pin = D0;
+const int fanPin = D7;
+
 
 void setup_wifi() {
 
@@ -89,11 +94,11 @@ void callback(char *topic, byte *payload, unsigned int length) {
 
   // Check which device is being controlled
   if (strcmp(device_name, LED_1) == 0) {
-    digitalWrite(D6, strcmp(state, "on") == 0 ? HIGH : LOW);
+    digitalWrite(ledPin, strcmp(state, "on") == 0 ? HIGH : LOW);
   } else if (strcmp(device_name, LED_2) == 0) {
-    digitalWrite(D7, strcmp(state, "on") == 0 ? HIGH : LOW);
+    digitalWrite(fanPin, strcmp(state, "on") == 0 ? HIGH : LOW);
   }else if(strcmp(device_name, LED_3) == 0){
-    digitalWrite(D0, strcmp(state, "on") == 0 ? HIGH : LOW);
+    digitalWrite(led2Pin, strcmp(state, "on") == 0 ? HIGH : LOW);
   }
   client.publish(action_topic, json);
 }
@@ -119,9 +124,9 @@ void reconnect() {
 }
 
 void setup() {
-  pinMode(D6, OUTPUT);
-  pinMode(D7, OUTPUT);
-  pinMode(D0, OUTPUT);
+  pinMode(ledPin, OUTPUT);
+  pinMode(fanPin, OUTPUT);
+  pinMode(led2Pin, OUTPUT);
 
   dht.begin();
   sensor_t sensor;
