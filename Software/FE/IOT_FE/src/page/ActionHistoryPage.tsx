@@ -48,6 +48,7 @@ function ActionHistoryPage() {
         setListData(res.content);
         setTotalItem(res.totalElements);
         setPageOffSet(res.pageable.offset);
+        setError(null);
       }
     } catch (e) {
       setError(e.response.data.message);

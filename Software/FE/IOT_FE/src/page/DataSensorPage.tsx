@@ -82,6 +82,7 @@ function DataSensorPage() {
         setListData(res.content);
         setTotalItem(res.totalElements);
         setPageOffSet(res.pageable.offset);
+        setError(null);
       }
     } catch (e) {
       setError(e.response.data.message);
@@ -258,12 +259,13 @@ function DataSensorPage() {
                       <td>{item.temperature}</td>
                       <td>{item.humidity}</td>
                       <td>{item.light}</td>
-                      <td>
+                      {/* <td>
                         {format(
-                          new Date(item.created_at),
+                          new Date(),
                           "dd/MM/yyyy HH:mm:ss"
                         )}
-                      </td>
+                      </td> */}
+                      <td>{item.created_at}</td>
                     </tr>
                   ))}
               </tbody>
