@@ -17,9 +17,9 @@ DHT_Unified dht(DHTPIN, DHTTYPE);
 uint32_t delayMS;
 
 
-const char *ssid = "Le Trong Tien_Tang2";
-const char *password = "21121970";
-const char *mqtt_server = "192.168.1.2";
+const char *ssid = "Duong Le Pro";
+const char *password = "abcd1234";
+const char *mqtt_server = " 192.168.43.59";
 const int mqtt_port = 1884;
 const char *data_topic = "Data";
 const char *action_topic = "Action";

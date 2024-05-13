@@ -110,6 +110,7 @@ function Dashboard() {
           setHumidityList(res.content.map((data) => data.humidity).reverse());
           setLightList(res.content.map((data) => data.light).reverse());
           setIsLoading(false);
+          setError(null);
         }
       } catch (e) {
         setError(e.message);
