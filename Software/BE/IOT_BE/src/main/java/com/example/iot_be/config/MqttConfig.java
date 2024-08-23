@@ -19,8 +19,6 @@ public class MqttConfig {
         options.setAutomaticReconnect(true);
         options.setCleanSession(true);
 
-        options.setUserName(MqttConstraint.USERNAME);
-        options.setPassword(MqttConstraint.PASSWORD.toCharArray());
 
         IMqttClient mqttClient = new MqttClient(MqttConstraint.MQTT_BROKER, MqttConstraint.CLIENT_ID);
         mqttClient.connect(options);

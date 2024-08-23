@@ -17,14 +17,12 @@ DHT_Unified dht(DHTPIN, DHTTYPE);
 uint32_t delayMS;
 
 
-const char *ssid = "Duong Le Pro";
-const char *password = "abcd1234";
-const char *mqtt_server = " 192.168.43.59";
+const char *ssid = "Le Trong Tien_Tang2";
+const char *password = "21121970";
+const char *mqtt_server = "192.168.1.2";
 const int mqtt_port = 1884;
 const char *data_topic = "Data";
 const char *action_topic = "Action";
-const char *broker_username = "user1";
-const char *broker_password = "1234";
 WiFiClient espClient;
 PubSubClient client(espClient);
 
@@ -103,7 +101,7 @@ void reconnect() {
     String clientId = "ESP8266Client-";
     clientId += String(random(0xffff), HEX);
     // Attempt to connect
-    if (client.connect(clientId.c_str(), broker_username, broker_password)) {
+    if (client.connect(clientId.c_str())) {
       Serial.println("connected");
       client.subscribe("device");
     } else {
@@ -162,7 +160,8 @@ void loop() {
       Serial.print(F("Temperature: "));
       Serial.print(event.temperature);
       Serial.println(F("°C"));
-      temp = event.temperature;
+      temp = round(event.temperature);
+    
     }
     // Get humidity event and print its value.
     dht.humidity().getEvent(&event);
